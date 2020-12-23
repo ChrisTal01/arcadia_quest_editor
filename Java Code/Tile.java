@@ -1,8 +1,6 @@
 package Editor;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class Tile extends AQ_Object {
 
     public Tile(String pImagePath, String pName, int pGameBox) {
         super(pImagePath + "\\img" + pName + "\\img" + pName + TILE_TYPES[GRAY_IMAGE] + FILE_TYPE_JPG, pName, 1,
-                pGameBox);
+                pGameBox, 1, 1);
         mPath = pImagePath + "\\img" + pName + "\\img" + pName;
         mSelectedImage = GRAY_IMAGE;
         mTileImages = readImages(mPath, FILE_TYPE_JPG);
@@ -34,7 +32,7 @@ public class Tile extends AQ_Object {
     }
 
     public Tile(Tile pTile) {
-        super(pTile.getImagePath(), pTile.getName(), pTile.getAmount(), pTile.getGameBox());
+        super(pTile.getImagePath(), pTile.getName(), pTile.getAmount(), pTile.getGameBox(), 1, 1);
         copy(pTile);
     }
 
@@ -103,14 +101,14 @@ public class Tile extends AQ_Object {
         return mSelectedImage;
     }
 
-    public void addAqObject(AQ_Object object) {
+    public void addAqObject(AQ_Object pObject) {
         if (mNormalObjects.size() < 4) {
-            if (object instanceof Monster) {
-                if (getCurrentSize() + ((Monster) object).getSize() <= 2) {
-                    mNormalObjects.add(object);
+            if (pObject instanceof Monster) {
+                if ((getCurrentSize() + ((Monster) pObject).getSize()) <= 2) {
+                    mNormalObjects.add(pObject);
                 }
             } else {
-                mNormalObjects.add(object);
+                mNormalObjects.add(pObject);
             }
         }
     }
