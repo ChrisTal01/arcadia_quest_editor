@@ -16,6 +16,9 @@ public class AQ_Object {
     private int mGameBox;
     private String mImagePath;
 
+    private int mPrefIconHeight;
+    private int mPrefIconWidth;
+
     public static final int ARCADIA_QUEST = 1;
     public static final int INFERNO = 2;
     public static final int BEYOND_THE_GRAVE = 3;
@@ -31,12 +34,15 @@ public class AQ_Object {
 
     public static final int OTHER = 12;
 
-    public AQ_Object(String pImagePath, String pName, int pAmount, int pGameBox) {
+    public AQ_Object(String pImagePath, String pName, int pAmount, int pGameBox, int pPrefIconWidth,
+            int pPrefIconHeight) {
         mImage = readImage(pImagePath);
         mImagePath = pImagePath;
         mName = pName;
         mAmount = pAmount;
         mGameBox = pGameBox;
+        mPrefIconWidth = pPrefIconWidth;
+        mPrefIconHeight = pPrefIconHeight;
 
     }
 
@@ -44,7 +50,7 @@ public class AQ_Object {
         copy(pObject);
     }
 
-    private BufferedImage readImage(String pPath) {
+    public static BufferedImage readImage(String pPath) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(new File(pPath));
@@ -95,6 +101,22 @@ public class AQ_Object {
         mImage = pImage;
     }
 
+    public void setPrefIconWidth(int pPref) {
+        mPrefIconWidth = pPref;
+    }
+
+    public void setPrefIconHeight(int pPref) {
+        mPrefIconHeight = pPref;
+    }
+
+    public int getPrefIconWidth() {
+        return mPrefIconWidth;
+    }
+
+    public int getPrefIconHeight() {
+        return mPrefIconHeight;
+    }
+
     public static BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
@@ -108,6 +130,8 @@ public class AQ_Object {
         setImage(deepCopy(pObject.getImage()));
         setGameBox(pObject.getGameBox());
         setImagePath(pObject.getImagePath());
+        setPrefIconWidth(pObject.getPrefIconWidth());
+        setPrefIconHeight(pObject.getPrefIconHeight());
     }
 
 }
