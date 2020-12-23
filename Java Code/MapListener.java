@@ -1,4 +1,3 @@
-package Editor;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyEvent;

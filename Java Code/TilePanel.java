@@ -1,4 +1,3 @@
-package Editor;
 
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;

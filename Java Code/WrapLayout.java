@@ -1,4 +1,3 @@
-package Editor;
 
 import java.awt.*;
 import javax.swing.JScrollPane;
