@@ -7,6 +7,7 @@ import javax.swing.JLabel;
 import java.awt.image.BufferedImage;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 public class ObjectLabel extends JLabel {
@@ -21,19 +22,31 @@ public class ObjectLabel extends JLabel {
         mObject = pObject;
         mListener = pListener;
         this.setBorder(BorderFactory.createLineBorder(Color.black));
-        this.setFont(new Font("Arial", Font.PLAIN, 20));
+        this.setFont(new Font("Arial", Font.PLAIN, 18));
         this.setText(mObject.getName());
+        this.setPreferredSize(new Dimension(230, 75));
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
-
-        this.setText(mObject.getName());
         BufferedImage img = TilePanel.readImage(mObject.getImagePath());
-        img = TilePanel.resize(img, 75, 75);
+
+        if (pObject instanceof Door) {
+            this.setVerticalTextPosition(JLabel.BOTTOM); // set text Top, Center, Bottom of ImgaeIcon
+            this.setHorizontalTextPosition(JLabel.CENTER); // set text Left, Right, Center of ImageIcon
+
+            this.setVerticalAlignment(JLabel.CENTER); // set vertical possition of icon and text within Label
+            this.setHorizontalAlignment(JLabel.CENTER); // set horizontal possition of icon and text within Label
+        }
+        img = TilePanel.resize(img, mObject.getPrefIconWidth(), mObject.getPrefIconHeight());
         this.setIcon(new ImageIcon(img));
     }
 
     public AQ_Object getAqObject() {
-        AQ_Object newObject = new AQ_Object(mObject);
+        AQ_Object newObject;
+        if (mObject instanceof Monster) {
+            newObject = new Monster((Monster) mObject);
+        } else {
+            newObject = new AQ_Object(mObject);
+        }
         return newObject;
     }
 
