@@ -8,7 +8,8 @@ public class Map extends AQ_Object {
 
     public Map(String pPath, String pName, int pGameBox) {
         super(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()) + "\\map\\"
-                + pName.replace(" ", "_") + "_Normal.png", pName, 1, pGameBox);
+                + pName.replace(" ", "_") + "_Normal.png", pName, 1, pGameBox, 1, 1);
+
         for (int i = 0; i < mTiles.length; i++) {
             mTiles[i] = new Tile(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()),
                     String.valueOf(i), pGameBox);
@@ -17,7 +18,7 @@ public class Map extends AQ_Object {
     }
 
     public Map(Map pMap) {
-        super(pMap.getImagePath(), pMap.getName(), pMap.getAmount(), pMap.getGameBox());
+        super(pMap.getImagePath(), pMap.getName(), pMap.getAmount(), pMap.getGameBox(), 1, 1);
         copy(pMap);
     }
 
@@ -51,9 +52,8 @@ public class Map extends AQ_Object {
         Tile[] newTiles = new Tile[9];
         for (int i = 0; i < newTiles.length; i++) {
             newTiles[i] = new Tile(pMap.getTileAtPos(i));
-            System.out.println(newTiles[i]);
         }
         this.setTiles(newTiles);
-        this.setCounterPart(pMap.getCounterPart());
+        // this.setCounterPart(new Map(pMap.getCounterPart()));
     }
 }
