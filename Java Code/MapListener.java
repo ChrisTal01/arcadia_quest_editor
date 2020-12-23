@@ -17,6 +17,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     private ObjectLabel mCurrentObjectLabel;
     private AQ_Object mCurrentAqObject;
     private Map mCurrentMap;
+    private Door mCurrentDoor;
 
     // Selected means clicked on
     private TilePanel mSelectedTilePanel;
@@ -34,6 +35,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         mCurrentMap = null;
         mMenuOpen = false;
         mCurrentAqObject = null;
+        mSelectedTilePanel = null;
 
     }
 
@@ -185,9 +187,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-        // Backspace or delete
-        if (e.getKeyCode() == 8 || e.getKeyCode() == 110) {
+        // Backspace or delete (numpad) or delete
+        if (e.getKeyCode() == 8 || e.getKeyCode() == 110 || e.getKeyCode() == 127) {
             // remove selected Object from Tile Panel
             if (mSelectedAqObject != null && mSelectedTilePanel != null) {
                 mSelectedTilePanel.removeAqObject(mSelectedAqObject);
