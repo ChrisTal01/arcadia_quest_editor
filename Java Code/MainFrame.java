@@ -28,7 +28,7 @@ public class MainFrame extends JFrame {
     private JPanel mPanelMonsters; // Contains Monsters
     private JPanel mPanelObjects; // Contains Objects
     private JPanel mPanelLeft; // Contains used Objects
-    private JPanel mPanelMiddle; // Main Window
+    private MainPanel mPanelMiddle; // Main Window
     private JTabbedPane mRightTabbedPane;
 
     private MapPanel[][] mMapPanels;
@@ -132,6 +132,18 @@ public class MainFrame extends JFrame {
         mPanelObjects.addMouseListener(listener);
         mPanelObjects.addMouseMotionListener(listener);
 
+        // Monster Labels
+        mObjectLabels = new ArrayList<ObjectLabel>();
+
+        for (AQ_Object o : mArcadiaQuest.getAQ_Objects()) {
+            ObjectLabel label = new ObjectLabel(o, listener);
+            mObjectLabels.add(label);
+        }
+
+        for (ObjectLabel label : mObjectLabels) {
+            mPanelObjects.add(label);
+        }
+
         // Object Scroll Pane
         mObjectScrollPane = new JScrollPane();
         mObjectScrollPane.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -149,13 +161,7 @@ public class MainFrame extends JFrame {
         this.add(mRightTabbedPane, BorderLayout.EAST);
 
         // Middle Panel
-        mPanelMiddle = new JPanel();
-        mPanelMiddle.setBackground(Color.BLACK);
-        mPanelMiddle.setPreferredSize(new Dimension(500, 400));
-        mPanelMiddle.setLayout(null);
-        mPanelMiddle.setAutoscrolls(true);
-        mPanelMiddle.addMouseListener(listener);
-        mPanelMiddle.addMouseMotionListener(listener);
+        mPanelMiddle = new MainPanel(listener);
 
         // Middle Scroll Pane
         mMiddleScrollPane = new JScrollPane();
