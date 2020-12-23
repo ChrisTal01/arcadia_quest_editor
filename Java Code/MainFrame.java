@@ -26,7 +26,7 @@ public class MainFrame extends JFrame {
     private JPanel mPanelMonsters; // Contains Monsters
     private JPanel mPanelObjects; // Contains Objects
     private JPanel mPanelLeft; // Contains used Objects
-    private MainPanel mPanelMiddle; // Main Window
+    private JPanel mPanelMiddle; // Main Window
     private JTabbedPane mRightTabbedPane;
 
     private MapPanel[][] mMapPanels;
@@ -166,7 +166,13 @@ public class MainFrame extends JFrame {
         this.add(mRightTabbedPane, BorderLayout.EAST);
 
         // Middle Panel
-        mPanelMiddle = new MainPanel(listener);
+        mPanelMiddle = new JPanel();
+        mPanelMiddle.setBackground(Color.BLACK);
+        mPanelMiddle.setPreferredSize(new Dimension(500, 400));
+        mPanelMiddle.setLayout(null);
+        mPanelMiddle.setAutoscrolls(true);
+        mPanelMiddle.addMouseListener(listener);
+        mPanelMiddle.addMouseMotionListener(listener);
 
         // Middle Scroll Pane
         mMiddleScrollPane = new JScrollPane();

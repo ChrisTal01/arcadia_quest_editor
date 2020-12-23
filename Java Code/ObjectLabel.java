@@ -43,6 +43,8 @@ public class ObjectLabel extends JLabel {
         AQ_Object newObject;
         if (mObject instanceof Monster) {
             newObject = new Monster((Monster) mObject);
+        } else if (mObject instanceof Door) {
+            newObject = new Door((Door) mObject);
         } else {
             newObject = new AQ_Object(mObject);
         }

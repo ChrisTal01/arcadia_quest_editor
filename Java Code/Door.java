@@ -36,8 +36,8 @@ public class Door extends AQ_Object {
     }
 
     public void copy(Door pDoor) {
-        this.setCounterPart(new Door(pDoor.getCounterPart()));
         this.setVertikalImage(AQ_Object.deepCopy(pDoor.getVertikalImage()));
+        // this.setCounterPart(new Door(pDoor.getCounterPart()));
     }
 
 }
