@@ -1,4 +1,3 @@
-package Editor;
 
 public class Monster extends AQ_Object {
     private String mMonsterTypeString;

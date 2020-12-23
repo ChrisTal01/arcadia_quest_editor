@@ -1,4 +1,3 @@
-package Editor;
 
 import javax.swing.JPanel;
 

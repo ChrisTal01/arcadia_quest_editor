@@ -1,4 +1,3 @@
-package Editor;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;

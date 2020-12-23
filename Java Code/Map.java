@@ -1,4 +1,3 @@
-package Editor;
 
 public class Map extends AQ_Object {
 

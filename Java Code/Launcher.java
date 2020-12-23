@@ -1,4 +1,3 @@
-package Editor;
 
 public class Launcher {
 

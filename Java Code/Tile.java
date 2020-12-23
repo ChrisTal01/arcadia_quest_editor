@@ -1,4 +1,3 @@
-package Editor;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
