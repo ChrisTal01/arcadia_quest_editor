@@ -1,10 +1,8 @@
 package Editor;
 
-import java.io.File;
-
 public class StoneCard extends AQ_Object {
 
-    private final int mStoneType;
+    private int mStoneType;
 
     private static final int BRIMSTONE_CARD = 1;
     private static final int TOMBSTONE_CARD = 2;
@@ -15,12 +13,27 @@ public class StoneCard extends AQ_Object {
 
     private static final int OTHER_STONE_CARD = 7;
 
-    public StoneCard(String pPath, String pName, int pAmount, int pGameBox, int pStoneType) {
-        super(pPath, pName, pAmount, pGameBox);
+    public StoneCard(String pPath, String pName, int pAmount, int pGameBox, int pStoneType, int pPrefIconWidth,
+            int pPrefIconHeight) {
+        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight);
+        mStoneType = pStoneType;
+    }
+
+    public StoneCard(StoneCard pStoneCard) {
+        super(pStoneCard.getImagePath(), pStoneCard.getName(), pStoneCard.getAmount(), pStoneCard.getGameBox(),
+                pStoneCard.getPrefIconWidth(), pStoneCard.getPrefIconHeight());
+        copy(pStoneCard);
+    }
+
+    public void setStoneType(int pStoneType) {
         mStoneType = pStoneType;
     }
 
     public int getStoneType() {
         return mStoneType;
+    }
+
+    public void copy(StoneCard pStoneCard) {
+        this.setStoneType(pStoneCard.getStoneType());
     }
 }
