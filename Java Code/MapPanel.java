@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
 public class MapPanel extends JPanel {
 
     private static int mSize = 400;
