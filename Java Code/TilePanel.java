@@ -22,6 +22,7 @@ public class TilePanel extends JPanel {
     private boolean mEntered = false;
 
     private ArrayList<AQ_Object> mNormalObjects = new ArrayList<>();
+    private ArrayList<Door> mDoorObjects = new ArrayList<>();
     private AQ_Object mSelectedObject;
     private StoneCard mStoneCard;
 
@@ -54,7 +55,6 @@ public class TilePanel extends JPanel {
         mNormalTile.addActionListener(e -> {
             setSelectedImage(Tile.NORMAL_IMAGE);
             repaint();
-            System.out.println(mTile.getSelectedPos());
         });
 
         mGrayTile = new JMenuItem("Use gray tile");
@@ -65,7 +65,6 @@ public class TilePanel extends JPanel {
 
         mStartTile = new JMenuItem("Use start tile");
         mStartTile.addActionListener(e -> {
-            System.out.println("start Pressed");
             setSelectedImage(Tile.START_IMAGE);
             repaint();
         });
@@ -176,7 +175,7 @@ public class TilePanel extends JPanel {
                         g.drawRect(xStart - 1, yStart - 1, xEnd + 1, yEnd + 1);
                     }
 
-                    if (amount == 3) {
+                    if (amount >= 3) {
                         ////
                         // Bottom-Right
                         ////
@@ -226,7 +225,7 @@ public class TilePanel extends JPanel {
 
     }
 
-    public static BufferedImage resize(BufferedImage img, int height, int width) {
+    public static BufferedImage resize(BufferedImage img, int width, int height) {
         Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = resized.createGraphics();
@@ -362,7 +361,6 @@ public class TilePanel extends JPanel {
 
     public void removeAqObject(AQ_Object pObejct) {
         if (mTile != null) {
-            System.out.println("Init remove Object");
             mTile.removeAqObject(pObejct);
             mNormalObjects = mTile.getAqObecjts();
             revalidate();
