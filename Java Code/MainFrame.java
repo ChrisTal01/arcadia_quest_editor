@@ -1,17 +1,16 @@
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
@@ -55,8 +54,15 @@ public class MainFrame extends JFrame {
     private void initComponents() {
 
         // GameBoxes
+        String currentPath = "";
+        try {
+            currentPath = new File(".").getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
-        mArcadiaQuest = new Gamebox("C:\\Users\\muell\\Desktop\\ArcadiaQuestEditor\\AQ\\", "Arcadia Quest",
+        mArcadiaQuest = new Gamebox(currentPath + "\\ArcadiaQuestData\\ArcadiaQuest\\", "Arcadia Quest",
                 Gamebox.ARCADIA_QUEST);
 
         // Left Panel
