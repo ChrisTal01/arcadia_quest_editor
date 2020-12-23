@@ -64,7 +64,11 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         // Press on ObjectLabel
         if (e.getSource() instanceof ObjectLabel) {
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
-            mCurrentAqObject = mCurrentObjectLabel.getAqObject();
+            if (mCurrentObjectLabel.getAqObject() instanceof Door) {
+                mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
+            } else {
+                mCurrentAqObject = mCurrentObjectLabel.getAqObject();
+            }
         }
         // Press on MapLabel
         if (e.getSource() instanceof MapLabel) {
@@ -142,6 +146,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         mCurrentMap = null;
         mCurrentAqObject = null;
+        mCurrentDoor = null;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.awt.Graphics2D;
 
 public class MapPanel extends JPanel {
 
-    private static int mSize = 400;
+    private static int mSize = 399;
 
     private TilePanel[] mTilePanels = new TilePanel[9];
     private boolean mEntered;
