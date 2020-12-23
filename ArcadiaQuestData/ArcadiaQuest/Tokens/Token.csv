@@ -1,19 +1,14 @@
-Spiel;Name;Bild;Anzahl
-Arcadia Quest;Brutplättchen;Brutplättchen.png;5
-Arcadia Quest;Erkundungsplättchen;Erkundungsplättchen_Rückseite.png;18
-Arcadia Quest;Blaues Portal;Portal_Blau.png;8
-Arcadia Quest;Rotes Portal;Portal_Rot.png;8
-Arcadia Quest;Blaues Questplättchen;Questplättchen_Blau.png;1
-Arcadia Quest;Grünes Questplättchen;Questplättchen_Grün.png;1
-Arcadia Quest;Oranges Questplättchen;Questplättchen_Orange.png;1
-Arcadia Quest;Rotes Questplättchen;Questplättchen_Rot.png;1
-Arcadia Quest;Geschlossene Tür;Tür_Geschlossen_Vertikal.png;17
-Arcadia Quest;Geschlossene Tür;Tür_Geschlossen_Horizontal.png;17
-Arcadia Quest;Offene Tür;Tür_Offen_Vertikal.png;17
-Arcadia Quest;Offene Tür;Tür_Offen_Horizontal.png;17
-Arcadia Quest;Kleine offene Tür;Tür_Klein_Offen_Vertikal.png;4
-Arcadia Quest;Kleine offene Tür;Tür_Klein_Offen_Horizontal.png;4
-Arcadia Quest;Kleine geschlossene Tür;Tür_Klein_Geschlossen_Vertikal.png;4
-Arcadia Quest;Kleine geschlossene Tür;Tür_Klein_Geschlossen_Horizontal.png;4
-Arcadia Quest;Verschlossene Tür;Tür_Verschlossen_Vertikal.png;1
-Arcadia Quest;Verschlossene Tür;Tür_Verschlossen_Horizontal.png;1
+Game;Name;Picture;Picture2;Amount;PrefIconHeight;PrefIconWidth
+Arcadia Quest;Brutplättchen;Brutplättchen.png;;5;100;75
+Arcadia Quest;Erkundungsplättchen;Erkundungsplättchen_Rückseite.png;;18;75;75
+Arcadia Quest;Blaues Portal;Portal_Blau.png;;8;75;75
+Arcadia Quest;Rotes Portal;Portal_Rot.png;;8;75;75
+Arcadia Quest;Blaues Questplättchen;Questplättchen_Blau.png;;1;75;75
+Arcadia Quest;Grünes Questplättchen;Questplättchen_Grün.png;;1;75;75
+Arcadia Quest;Oranges Questplättchen;Questplättchen_Orange.png;;1;75;75
+Arcadia Quest;Rotes Questplättchen;Questplättchen_Rot.png;;1;75;75
+Arcadia Quest;Geschlossene Tür;Tür_Geschlossen_Horizontal.png;Tür_Geschlossen_Vertikal.png;17;150;40
+Arcadia Quest;Offene Tür;Tür_Offen_Horizontal.png;Tür_Offen_Vertikal.png;17;150;40
+Arcadia Quest;Kleine geschlossene Tür;Tür_Klein_Geschlossen_Horizontal.png;Tür_Klein_Geschlossen_Vertikal.png;4;150;40
+Arcadia Quest;Kleine offene Tür;Tür_Klein_Offen_Horizontal.png;Tür_Klein_Offen_Vertikal.png;4;150;40
+Arcadia Quest;Verschlossene Tür;Tür_Verschlossen_Horizontal.png;Tür_Verschlossen_Vertikal.png;1;150;40
