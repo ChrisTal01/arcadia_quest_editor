@@ -197,5 +197,23 @@ public class MainFrame extends JFrame {
         }
         this.add(mMiddleScrollPane, BorderLayout.CENTER);
 
+        // set Neighbors of Map Panels
+        for (int i = 0; i < mMapPanels.length; i++) {
+            for (int j = 0; j < mMapPanels[i].length; j++) {
+                if (j - 1 >= 0) {
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j - 1], TilePanel.TOP);
+                }
+                if (i + 1 < mMapPanels.length) {
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i + 1][j], TilePanel.RIGHT);
+                }
+                if (j + 1 < mMapPanels[i].length) {
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j + 1], TilePanel.BOTTOM);
+                }
+                if (i - 1 >= 0) {
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i - 1][j], TilePanel.LEFT);
+                }
+            }
+        }
+
     }
 }

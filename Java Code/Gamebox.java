@@ -25,7 +25,6 @@ public class Gamebox {
     public static final int FALL_OF_ARCADIA = 7;
 
     public Gamebox(String pPath, String pName, int pIndex) {
-        System.out.println(pPath);
         mName = pName;
         mIndex = pIndex;
         mPath = pPath;

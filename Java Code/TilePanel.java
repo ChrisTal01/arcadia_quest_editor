@@ -14,11 +14,13 @@ import java.awt.Color;
 import java.awt.Image;
 
 public class TilePanel extends JPanel {
+    // Top, Right, Bottom, Left
+    private TilePanel[] mNeighbors = { null, null, null, null };
     private BufferedImage mSelectedImage;
     private static int size = 5;
     private BufferedImage[] mTileImages = new BufferedImage[size];
     private Tile mTile;
-    private boolean mEntered = false;
+    private boolean mShowDoorOutline = false;
 
     private ArrayList<AQ_Object> mNormalObjects = new ArrayList<>();
     private ArrayList<Door> mDoorObjects = new ArrayList<>();
@@ -31,6 +33,11 @@ public class TilePanel extends JPanel {
     private JMenuItem mStartTile;
     private JMenuItem mGreenTile;
     private JMenuItem mVioletTile;
+
+    public static int TOP = 0;
+    public static int RIGHT = 1;
+    public static int BOTTOM = 2;
+    public static int LEFT = 3;
 
     public TilePanel(Tile pTile) {
         mTile = pTile;
@@ -220,6 +227,31 @@ public class TilePanel extends JPanel {
 
                 }
             }
+
+            if (mShowDoorOutline) {
+                System.out.println("is True");
+
+                int xStart;
+                int yStart;
+                int xEnd;
+                int yEnd;
+                // draw Door outline
+                // Top
+                if (mNeighbors[0] != null) {
+                    xStart = 10;
+                    yStart = -10;
+                    xEnd = this.getWidth() - 2 * xStart;
+                    yEnd = 20;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Right
+
+                // Bottom
+
+                // Left
+            }
         }
 
     }
@@ -341,12 +373,10 @@ public class TilePanel extends JPanel {
         return mNormalObjects;
     }
 
-    public boolean hasEntered() {
-        return mEntered;
-    }
-
-    public void setEntered(boolean pState) {
-        mEntered = pState;
+    public void setShowDoorOutline(boolean pState) {
+        mShowDoorOutline = pState;
+        revalidate();
+        repaint();
     }
 
     public void addAqObject(AQ_Object pObejct) {
@@ -448,6 +478,14 @@ public class TilePanel extends JPanel {
     public void deSelectAqObject() {
         mSelectedObject = null;
         repaint();
+    }
+
+    public void setNeighborAtPos(TilePanel pTilePanel, int pPos) {
+        mNeighbors[pPos] = pTilePanel;
+    }
+
+    public TilePanel getNeighborAtPos(int pPos) {
+        return mNeighbors[pPos];
     }
 
     public void setTile(Tile pTile) {

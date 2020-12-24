@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -26,6 +27,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     private boolean mMenuOpen;
     private TilePanel mTilePanelMenu;
     private MapPanel mMapPanelMenu;
+
+    private ArrayList<MapPanel> mMapPanels = new ArrayList<>();
 
     public MapListener() {
         mCurrentMapPanel = null;
@@ -66,6 +69,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
+                for (MapPanel mp : mMapPanels) {
+                    mp.setShowDoorOutline(true);
+                }
             } else {
                 mCurrentAqObject = mCurrentObjectLabel.getAqObject();
             }
@@ -136,6 +142,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         // Release on MapPanel
         if (mCurrentMap != null && mCurrentMapPanel != null) {
             mCurrentMapPanel.setMap(mCurrentMap);
+            mMapPanels.add(mCurrentMapPanel);
         }
         // Release on TilePanel
         if (mCurrentTilePanel != null && mCurrentAqObject != null) {
@@ -147,6 +154,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         mCurrentMap = null;
         mCurrentAqObject = null;
         mCurrentDoor = null;
+        for (MapPanel mp : mMapPanels) {
+            mp.setShowDoorOutline(false);
+        }
     }
 
     @Override

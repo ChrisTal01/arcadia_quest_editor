@@ -3,9 +3,6 @@ import javax.swing.JPanel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
 public class MapPanel extends JPanel {
 
     private static int mSize = 399;
@@ -13,7 +10,7 @@ public class MapPanel extends JPanel {
     private TilePanel[] mTilePanels = new TilePanel[9];
     private boolean mEntered;
     private boolean mPressed;
-    private boolean mShiftPressed;
+    private MapPanel[] mNeighbors = { null, null, null, null };
 
     private JPopupMenu mPopupMenu;
     private JMenuItem mRotateRight;
@@ -22,9 +19,6 @@ public class MapPanel extends JPanel {
     private JMenuItem mFlip;
 
     private MapPanel mOppositeMapPanel;
-
-    private TilePanel mSelectedTilePanel;
-
     private MapListener mListener;
     private Map mMap;
 
@@ -32,8 +26,6 @@ public class MapPanel extends JPanel {
         this.setLayout(null);
         mEntered = false;
         mPressed = false;
-        mShiftPressed = false;
-        mSelectedTilePanel = null;
         mListener = pListener;
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
@@ -45,8 +37,6 @@ public class MapPanel extends JPanel {
         mMap = pMap;
         mEntered = false;
         mPressed = false;
-        mShiftPressed = false;
-        mSelectedTilePanel = null;
         mListener = pListener;
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
@@ -69,6 +59,8 @@ public class MapPanel extends JPanel {
             mTilePanels[i].addMouseMotionListener(mListener);
             this.add(mTilePanels[i]);
         }
+        // set Neighbors
+        setNeighbors();
 
         // PopUpMenu
 
@@ -246,5 +238,63 @@ public class MapPanel extends JPanel {
             mTilePanels[i].revalidate();
             mTilePanels[i].repaint();
         }
+    }
+
+    public MapPanel getNeighborAtPos(int pPos) {
+        return mNeighbors[pPos];
+    }
+
+    public void setNeighborAtPos(MapPanel pNeighbor, int pPos) {
+        mNeighbors[pPos] = pNeighbor;
+    }
+
+    public void setShowDoorOutline(boolean pState) {
+        for (TilePanel tp : mTilePanels) {
+            tp.setShowDoorOutline(pState);
+        }
+    }
+
+    private void setNeighbors() {
+        // 0
+        mTilePanels[0].setNeighborAtPos(mTilePanels[1], TilePanel.RIGHT);
+        mTilePanels[0].setNeighborAtPos(mTilePanels[3], TilePanel.BOTTOM);
+
+        // 1
+        mTilePanels[1].setNeighborAtPos(mTilePanels[2], TilePanel.RIGHT);
+        mTilePanels[1].setNeighborAtPos(mTilePanels[4], TilePanel.BOTTOM);
+        mTilePanels[1].setNeighborAtPos(mTilePanels[0], TilePanel.LEFT);
+
+        // 2
+        mTilePanels[2].setNeighborAtPos(mTilePanels[5], TilePanel.BOTTOM);
+        mTilePanels[2].setNeighborAtPos(mTilePanels[1], TilePanel.LEFT);
+
+        // 3
+        mTilePanels[3].setNeighborAtPos(mTilePanels[0], TilePanel.TOP);
+        mTilePanels[3].setNeighborAtPos(mTilePanels[4], TilePanel.RIGHT);
+        mTilePanels[3].setNeighborAtPos(mTilePanels[6], TilePanel.BOTTOM);
+
+        // 4
+        mTilePanels[4].setNeighborAtPos(mTilePanels[0], TilePanel.TOP);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[1], TilePanel.RIGHT);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[3], TilePanel.BOTTOM);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[0], TilePanel.LEFT);
+
+        // 5
+        mTilePanels[5].setNeighborAtPos(mTilePanels[2], TilePanel.TOP);
+        mTilePanels[5].setNeighborAtPos(mTilePanels[8], TilePanel.BOTTOM);
+        mTilePanels[5].setNeighborAtPos(mTilePanels[4], TilePanel.LEFT);
+
+        // 6
+        mTilePanels[6].setNeighborAtPos(mTilePanels[3], TilePanel.TOP);
+        mTilePanels[6].setNeighborAtPos(mTilePanels[7], TilePanel.RIGHT);
+
+        // 7
+        mTilePanels[7].setNeighborAtPos(mTilePanels[4], TilePanel.TOP);
+        mTilePanels[7].setNeighborAtPos(mTilePanels[8], TilePanel.RIGHT);
+        mTilePanels[7].setNeighborAtPos(mTilePanels[6], TilePanel.LEFT);
+
+        // 8
+        mTilePanels[8].setNeighborAtPos(mTilePanels[5], TilePanel.TOP);
+        mTilePanels[8].setNeighborAtPos(mTilePanels[7], TilePanel.LEFT);
     }
 }
