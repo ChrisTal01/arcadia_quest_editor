@@ -3,6 +3,11 @@ import javax.swing.JPanel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.Color;
+
 public class MapPanel extends JPanel {
 
     private static int mSize = 399;
@@ -85,6 +90,20 @@ public class MapPanel extends JPanel {
         mPopupMenu.add(mRotateLeft);
         mPopupMenu.add(mRotate180);
         mPopupMenu.add(mFlip);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // draw Background
+        if (mMap != null && mTilePanels[0] != null) {
+            for (TilePanel tp : mTilePanels) {
+                tp.paintBackground(g);
+            }
+            for (TilePanel tp : mTilePanels) {
+                tp.paintMonsters(g);
+            }
+        }
     }
 
     public void removeTilePanels() {
@@ -211,6 +230,8 @@ public class MapPanel extends JPanel {
         for (int i = 0; i < mTilePanels.length; i++) {
             mTilePanels[i].setTile(mMap.getTileAtPos(i));
         }
+        revalidate();
+        repaint();
     }
 
     public void setTilePanels(TilePanel[] pTilePanels) {

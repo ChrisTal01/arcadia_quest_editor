@@ -71,6 +71,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // Press on ObjectLabel
         if (e.getSource() instanceof ObjectLabel) {
+            System.out.println("Mouse Cliecked ObjectLabel");
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
@@ -83,14 +84,14 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on MapLabel
         if (e.getSource() instanceof MapLabel) {
-            // System.out.println("Clicked MapLabel");
+            System.out.println("Mouse Cliecked MapLabel");
             mCurrentMapLabel = (MapLabel) e.getSource();
             mCurrentMap = mCurrentMapLabel.getMap();
         }
         // Press on MapPanel
         if (e.getSource() instanceof MapPanel) {
+            System.out.println("Mouse Pressed MapPanel");
             if (mCurrentMapPanel != null && mCurrentMapPanel.getTilePanels()[0] != null) {
-                System.out.println("Pressed");
                 mCurrentMap = mCurrentMapPanel.getMap();
                 mCurrentMapPanel.removeTilePanels();
             }
@@ -107,15 +108,22 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // Press on Object on Tile Panel
         if (e.getSource() instanceof TilePanel) {
+            System.out.println("Mouse Pressed TilePanel");
             if (mSelectedTilePanel != null && mSelectedTilePanel != (TilePanel) e.getSource()) {
+                System.out.println("Deselect.");
                 mSelectedTilePanel.deSelectAqObject();
             }
             mSelectedTilePanel = (TilePanel) e.getSource();
-            mSelectedAqObject = mSelectedTilePanel.getAQ_ObjectAtLocation(e.getX(), e.getY());
+            if (mSelectedTilePanel.TileHasObjects()) {
+                System.out.println("Tile has Objects");
+                mSelectedAqObject = mSelectedTilePanel.getAQ_ObjectAtLocation(e.getX(), e.getY());
+            }
         }
 
         // Press on Tile Panel with right Click
-        if (e.getButton() == MouseEvent.BUTTON3 && e.getSource() instanceof TilePanel && !mShiftPressed && !mMenuOpen) {
+        if (e.getButton() == MouseEvent.BUTTON3 && e.getSource() instanceof TilePanel && !mShiftPressed && !mMenuOpen)
+
+        {
             mCurrentTilePanel = (TilePanel) e.getSource();
             mCurrentTilePanel.setPopupMenuLocation(e.getXOnScreen(), e.getYOnScreen());
             mCurrentTilePanel.setShowPopup(true);
@@ -125,7 +133,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // repaint aftre click
         if (mCurrentTilePanel != null) {
-            mCurrentTilePanel.repaint();
+            // mCurrentTilePanel.repaint();
         }
     }
 

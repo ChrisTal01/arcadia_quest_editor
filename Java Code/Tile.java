@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import java.awt.Graphics;
+
 import javax.imageio.ImageIO;
 
 public class Tile extends AQ_Object {
@@ -11,6 +13,7 @@ public class Tile extends AQ_Object {
     private BufferedImage[] mTileImages = new BufferedImage[5];
     private String mPath;
     private int mSelectedImage;
+    private BufferedImage mCurrentImage;
     private ArrayList<AQ_Object> mNormalObjects;
 
     public static final int NORMAL_IMAGE = 0;
@@ -28,6 +31,7 @@ public class Tile extends AQ_Object {
         mSelectedImage = GRAY_IMAGE;
         mTileImages = readImages(mPath, FILE_TYPE_JPG);
         mNormalObjects = new ArrayList<>();
+        mCurrentImage = mTileImages[mSelectedImage];
     }
 
     public Tile(Tile pTile) {
@@ -149,5 +153,12 @@ public class Tile extends AQ_Object {
         this.setSelectedPos(pTile.getSelectedPos());
         this.setPath(pTile.getPath());
         this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
+    }
+
+    public void paint(Graphics g) {
+        if (mCurrentImage != null) {
+            mCurrentImage = mCurrentImage(mSelectedImage, this.getHeight(), this.getWidth());
+            g.drawImage(mCurrentImage, 0, 0, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
+        }
     }
 }

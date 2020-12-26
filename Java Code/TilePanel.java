@@ -96,56 +96,18 @@ public class TilePanel extends JPanel {
 
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        mDoorWidth = this.getWidth() - mDoorEdgeSpace;
-        int halfSize = this.getWidth() / 2;
-
+    public void paintBackground(Graphics g) {
         // draw Background first
         if (mSelectedImage != null) {
             mSelectedImage = resize(mSelectedImage, this.getHeight(), this.getWidth());
             g.drawImage(mSelectedImage, 0, 0, mSelectedImage.getWidth(), mSelectedImage.getHeight(), this);
+        }
 
-            // draw Doors
-            // Top
-            if (mDoors[0] != null) {
-                Door d = mDoors[0];
-                d.setImage(resize(d.getImage(), mDoorWidth, mDoorHeight));
-                BufferedImage img = d.getImage();
-                g.drawImage(img, mDoorEdgeSpace, -mDoorHeight / 2, img.getWidth(), img.getHeight(), this);
-            }
-            // Bottom
-            if (mDoors[2] != null) {
-                Door d = mDoors[2];
-                d.setImage(resize(d.getImage(), mDoorWidth, mDoorHeight));
-                BufferedImage img = d.getImage();
-                g.drawImage(img, mDoorEdgeSpace, this.getHeight() - mDoorHeight / 2, img.getWidth(), img.getHeight(),
-                        this);
-            }
+    }
 
-            // Right
-            if (mDoors[1] != null) {
-                Door d = mDoors[1];
-                d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
-                BufferedImage img = d.getVertikalImage();
-                g.drawImage(img, this.getWidth() - (mDoorHeight / 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(),
-                        this);
-            }
-            // Left
-            if (mDoors[3] != null) {
-                Door d = mDoors[3];
-                d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
-                BufferedImage img = d.getVertikalImage();
-                g.drawImage(img, -(mDoorHeight / 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(), this);
-            }
-
-            // draw Stone Cards
-            if (mStoneCard != null) {
-                g.drawImage(mStoneCard.getImage(), 0, 0, mStoneCard.getImage().getWidth(),
-                        mStoneCard.getImage().getHeight(), this);
-            }
-
+    public void paintMonsters(Graphics g) {
+        int halfSize = this.getWidth() / 2;
+        if (mSelectedImage != null) {
             // draw Monsters, Tokens, etc.
             if (mNormalObjects != null && mNormalObjects.size() > 0) {
                 // draw Object in the center of Tile
@@ -223,8 +185,8 @@ public class TilePanel extends JPanel {
                         ob = mNormalObjects.get(2);
                         ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                         img = ob.getImage();
-                        xStart = this.getWidth() - img.getWidth() - 5;
-                        yStart = this.getHeight() - img.getHeight() - 5;
+                        xStart = this.getWidth() / 2 + 5;
+                        yStart = this.getHeight() / 2 + 5;
                         xEnd = img.getWidth();
                         yEnd = img.getHeight();
                         // the added number gives a litte offset
@@ -259,57 +221,122 @@ public class TilePanel extends JPanel {
 
                 }
             }
-
-            if (mShowDoorOutline) {
-
-                int xStart;
-                int yStart;
-                int xEnd;
-                int yEnd;
-                // draw Door outline
-                // Top
-                if (mNeighbors[0] != null && mDoors[0] == null) {
-                    xStart = 5;
-                    yStart = -10;
-                    xEnd = this.getWidth() - 2 * xStart;
-                    yEnd = mDoorHeight;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
-
-                // Right
-                if (mNeighbors[1] != null && mDoors[1] == null) {
-                    xStart = this.getHeight() - 10;
-                    yStart = 15;
-                    xEnd = 20;
-                    yEnd = this.getHeight() - 2 * yStart;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
-
-                // Bottom
-                if (mNeighbors[2] != null && mDoors[2] == null) {
-                    xStart = 5;
-                    yStart = this.getHeight() - mDoorHeight / 2;
-                    xEnd = this.getWidth() - 2 * xStart;
-                    yEnd = mDoorHeight;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
-
-                // Left
-                if (mNeighbors[3] != null && mDoors[3] == null) {
-                    xStart = -10;
-                    yStart = 15;
-                    xEnd = 20;
-                    yEnd = this.getHeight() - 2 * yStart;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
-            }
         }
     }
 
+    /*
+     * @Override protected void paintComponent(Graphics g) {
+     * super.paintComponent(g); mDoorWidth = this.getWidth() - mDoorEdgeSpace; int
+     * halfSize = this.getWidth() / 2;
+     * 
+     * // draw Background first if (mSelectedImage != null) { mSelectedImage =
+     * resize(mSelectedImage, this.getHeight(), this.getWidth());
+     * g.drawImage(mSelectedImage, 0, 0, mSelectedImage.getWidth(),
+     * mSelectedImage.getHeight(), this);
+     * 
+     * // draw Doors // Top if (mDoors[0] != null) { Door d = mDoors[0];
+     * d.setImage(resize(d.getImage(), mDoorWidth, mDoorHeight)); BufferedImage img
+     * = d.getImage(); g.drawImage(img, mDoorEdgeSpace, -mDoorHeight / 2,
+     * img.getWidth(), img.getHeight(), this); } // Bottom if (mDoors[2] != null) {
+     * Door d = mDoors[2]; d.setImage(resize(d.getImage(), mDoorWidth,
+     * mDoorHeight)); BufferedImage img = d.getImage(); g.drawImage(img,
+     * mDoorEdgeSpace, this.getHeight() - mDoorHeight / 2, img.getWidth(),
+     * img.getHeight(), this); }
+     * 
+     * // Right if (mDoors[1] != null) { Door d = mDoors[1];
+     * d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
+     * BufferedImage img = d.getVertikalImage(); g.drawImage(img, this.getWidth() -
+     * (mDoorHeight / 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(), this); }
+     * // Left if (mDoors[3] != null) { Door d = mDoors[3];
+     * d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
+     * BufferedImage img = d.getVertikalImage(); g.drawImage(img, -(mDoorHeight /
+     * 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(), this); }
+     * 
+     * // draw Stone Cards if (mStoneCard != null) {
+     * g.drawImage(mStoneCard.getImage(), 0, 0, mStoneCard.getImage().getWidth(),
+     * mStoneCard.getImage().getHeight(), this); }
+     * 
+     * // draw Monsters, Tokens, etc. if (mNormalObjects != null &&
+     * mNormalObjects.size() > 0) { // draw Object in the center of Tile int amount
+     * = mNormalObjects.size(); AQ_Object ob; // dummy Image BufferedImage img; int
+     * xStart; int yStart; int xEnd; int yEnd;
+     * 
+     * if (amount == 1) {
+     * 
+     * ob = mNormalObjects.get(0); ob.setImage(resize(ob.getImage(),
+     * ob.getPrefImageWidth(), ob.getPrefImageHeight())); img = ob.getImage();
+     * 
+     * xStart = halfSize - img.getWidth() / 2; yStart = halfSize - img.getHeight() /
+     * 2; xEnd = img.getWidth(); yEnd = img.getHeight();
+     * 
+     * g.drawImage(img, xStart, yStart, xEnd, yEnd, this); // Draw Border if
+     * (mSelectedObject != null && ob == mSelectedObject) { g.setColor(Color.BLACK);
+     * g.drawRect(xStart - 1, yStart - 1, xEnd + 1, yEnd + 1); }
+     * 
+     * } else { //// // Top-Right ////
+     * 
+     * ob = mNormalObjects.get(0); ob.setImage(resize(ob.getImage(),
+     * ob.getPrefImageWidth(), ob.getPrefImageHeight())); img = ob.getImage(); //
+     * the added number gives a litte offset xStart = this.getWidth() -
+     * img.getWidth() - 5; yStart = 5; xEnd = img.getWidth(); yEnd =
+     * img.getHeight(); g.drawImage(img, xStart, yStart, xEnd, yEnd, this); // Draw
+     * Border if (mSelectedObject != null && ob == mSelectedObject) {
+     * g.setColor(Color.BLACK); g.drawRect(xStart - 1, yStart - 1, xEnd + 1, yEnd +
+     * 1); }
+     * 
+     * //// // Bottom-Left ////
+     * 
+     * ob = mNormalObjects.get(1); ob.setImage(resize(ob.getImage(),
+     * ob.getPrefImageWidth(), ob.getPrefImageHeight())); img = ob.getImage();
+     * xStart = 5; yStart = this.getWidth() - img.getWidth() - 5; xEnd =
+     * img.getWidth(); yEnd = img.getHeight(); // the added number gives a litte
+     * offset g.drawImage(img, xStart, yStart, xEnd, yEnd, this); // Draw Border if
+     * (mSelectedObject != null && ob == mSelectedObject) { g.setColor(Color.BLACK);
+     * g.drawRect(xStart - 1, yStart - 1, xEnd + 1, yEnd + 1); }
+     * 
+     * if (amount >= 3) { //// // Bottom-Right ////
+     * 
+     * ob = mNormalObjects.get(2); ob.setImage(resize(ob.getImage(),
+     * ob.getPrefImageWidth(), ob.getPrefImageHeight())); img = ob.getImage();
+     * xStart = this.getWidth() - img.getWidth() - 5; yStart = this.getHeight() -
+     * img.getHeight() - 5; xEnd = img.getWidth(); yEnd = img.getHeight(); // the
+     * added number gives a litte offset g.drawImage(img, xStart, yStart, xEnd,
+     * yEnd, this); // Draw Border if (mSelectedObject != null && ob ==
+     * mSelectedObject) { g.setColor(Color.BLACK); g.drawRect(xStart - 1, yStart -
+     * 1, xEnd + 1, yEnd + 1); } } if (amount == 4) { //// // Top-Left ////
+     * 
+     * ob = mNormalObjects.get(3); ob.setImage(resize(ob.getImage(),
+     * ob.getPrefImageWidth(), ob.getPrefImageHeight())); img = ob.getImage();
+     * xStart = 5; yStart = 5; xEnd = img.getWidth(); yEnd = img.getHeight(); // the
+     * added number gives a litte offset g.drawImage(img, xStart, yStart, xEnd,
+     * yEnd, this); // Draw Border if (mSelectedObject != null && ob ==
+     * mSelectedObject) { g.setColor(Color.BLACK); g.drawRect(xStart - 1, yStart -
+     * 1, xEnd + 1, yEnd + 1); }
+     * 
+     * }
+     * 
+     * } }
+     * 
+     * if (mShowDoorOutline) {
+     * 
+     * int xStart; int yStart; int xEnd; int yEnd; // draw Door outline // Top if
+     * (mNeighbors[0] != null && mDoors[0] == null) { xStart = 5; yStart = -10; xEnd
+     * = this.getWidth() - 2 * xStart; yEnd = mDoorHeight; g.setColor(Color.BLUE);
+     * g.drawRect(xStart, yStart, xEnd, yEnd); }
+     * 
+     * // Right if (mNeighbors[1] != null && mDoors[1] == null) { xStart =
+     * this.getHeight() - 10; yStart = 15; xEnd = 20; yEnd = this.getHeight() - 2 *
+     * yStart; g.setColor(Color.BLUE); g.drawRect(xStart, yStart, xEnd, yEnd); }
+     * 
+     * // Bottom if (mNeighbors[2] != null && mDoors[2] == null) { xStart = 5;
+     * yStart = this.getHeight() - mDoorHeight / 2; xEnd = this.getWidth() - 2 *
+     * xStart; yEnd = mDoorHeight; g.setColor(Color.BLUE); g.drawRect(xStart,
+     * yStart, xEnd, yEnd); }
+     * 
+     * // Left if (mNeighbors[3] != null && mDoors[3] == null) { xStart = -10;
+     * yStart = 15; xEnd = 20; yEnd = this.getHeight() - 2 * yStart;
+     * g.setColor(Color.BLUE); g.drawRect(xStart, yStart, xEnd, yEnd); } } } }
+     */
     public static BufferedImage resize(BufferedImage img, int width, int height) {
         Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -401,8 +428,8 @@ public class TilePanel extends JPanel {
         if (mTile != null) {
             mTile.addAqObject(pObejct);
             mNormalObjects = mTile.getAqObecjts();
-            revalidate();
-            repaint();
+            this.getParent().revalidate();
+            this.getParent().repaint();
         }
     }
 
@@ -568,7 +595,7 @@ public class TilePanel extends JPanel {
 
     public void deSelectAqObject() {
         mSelectedObject = null;
-        repaint();
+        // repaint();
     }
 
     public void setNeighborAtPos(TilePanel pTilePanel, int pPos) {
@@ -588,5 +615,13 @@ public class TilePanel extends JPanel {
         setSelectedImage(mTile.getSelectedPos());
         revalidate();
         repaint();
+    }
+
+    public BufferedImage getSelectedImage() {
+        return mSelectedImage;
+    }
+
+    public boolean TileHasObjects() {
+        return mNormalObjects.size() > 0;
     }
 }
