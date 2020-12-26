@@ -30,6 +30,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     private boolean mShiftPressed;
     private boolean mMenuOpen;
+
     private Tile mTileMenu;
     private MapPanel mMapPanelMenu;
 
@@ -43,6 +44,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         mMenuOpen = false;
         mCurrentAqObject = null;
         mSelectedTile = null;
+        mShiftPressed = false;
 
     }
 
@@ -57,6 +59,12 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // reset specific objects
         mSelectedAqObject = null;
+
+        if (mTileMenu != null) {
+            mTileMenu.setShowPopup(false);
+            mMenuOpen = false;
+            mTileMenu = null;
+        }
 
         if (mMapPanelMenu != null) {
             mMapPanelMenu.setShowPopup(false);
@@ -86,12 +94,24 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on Map Panel with right Click and shift
         if (e.getButton() == MouseEvent.BUTTON3 && mShiftPressed && !mMenuOpen) {
-            if (mCurrentMapPanel != null) {
+            if (mCurrentMapPanel != null && mCurrentMapPanel.getMap() != null) {
                 mCurrentMapPanel.setPopupMenuLocation(e.getXOnScreen(), e.getYOnScreen());
                 mCurrentMapPanel.setShowPopup(true);
                 mMapPanelMenu = mCurrentMapPanel;
+                mMenuOpen = true;
             }
-            mMenuOpen = true;
+        }
+        // Press on Tile with right Click and shift
+        if (e.getButton() == MouseEvent.BUTTON3 && !mShiftPressed && !mMenuOpen && e.getSource() instanceof MapPanel) {
+            System.out.println("Pressed right");
+            mCurrentMapPanel = (MapPanel) e.getSource();
+            mCurrentTile = mCurrentMapPanel.getTileAtLocation(e.getX(), e.getY());
+            if (mCurrentTile != null) {
+                mCurrentTile.setPopupMenuLocation(e.getXOnScreen(), e.getYOnScreen());
+                mCurrentTile.setShowPopup(true);
+                mTileMenu = mCurrentTile;
+                mMenuOpen = true;
+            }
         }
     }
 
@@ -127,20 +147,10 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         if (e.getSource() instanceof ObjectLabel) {
             // System.out.println("ObjectLabel");
         }
-        // Enter TilePanel
-        if (e.getSource() instanceof Tile) {
-            Tile tile = (Tile) e.getSource();
-            mCurrentTile = tile;
-        }
         // Enter MapPanel
         if (e.getSource() instanceof MapPanel) {
             mCurrentMapPanel = (MapPanel) e.getSource();
             mCurrentMainPanel = (JPanel) mCurrentMapPanel.getParent();
-        }
-
-        // Enter MapLabel
-        if (e.getSource() instanceof MapLabel) {
-            // System.out.println("MapLabel");
         }
     }
 
@@ -165,6 +175,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     public void keyPressed(KeyEvent e) {
         // Backspace or delete (numpad) or delete
         if (e.getKeyCode() == 8 || e.getKeyCode() == 110 || e.getKeyCode() == 127) {
+            // TODO
         }
         if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
             mShiftPressed = true;

@@ -10,18 +10,28 @@ import java.awt.Color;
 import java.awt.Image;
 
 import javax.imageio.ImageIO;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 public class Tile extends AQ_Object {
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Variables
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
 
     private BufferedImage[] mTileImages = new BufferedImage[5];
     private String mPath;
     private int mSelectedImage;
     private BufferedImage mCurrentImage;
     private ArrayList<AQ_Object> mNormalObjects;
-    private int Size = 133;
+    private Door[] mDoors = { null, null, null, null };
+    private Tile[] mNeighbors = { null, null, null, null };
+    private MapPanel mMapPanel;
 
-    private int startX;
-    private int startY;
+    private int mSize = 133;
+    private int mStartX;
+    private int mStartY;
 
     public static final int NORMAL_IMAGE = 0;
     public static final int GRAY_IMAGE = 1;
@@ -36,6 +46,19 @@ public class Tile extends AQ_Object {
     public static final int BOTTOM = 2;
     public static final int LEFT = 3;
 
+    private JPopupMenu mPopupMenu;
+    private JMenuItem mGrayTile;
+    private JMenuItem mNormalTile;
+    private JMenuItem mStartTile;
+    private JMenuItem mGreenTile;
+    private JMenuItem mVioletTile;
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Constructor
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
+
     public Tile(String pImagePath, String pName, int pGameBox) {
         super(pImagePath + "\\img" + pName + "\\img" + pName + TILE_TYPES[GRAY_IMAGE] + FILE_TYPE_JPG, pName, 1,
                 pGameBox, 1, 1, 1, 1);
@@ -44,12 +67,77 @@ public class Tile extends AQ_Object {
         mTileImages = readImages(mPath, FILE_TYPE_JPG);
         mNormalObjects = new ArrayList<>();
         mCurrentImage = mTileImages[mSelectedImage];
+        mMapPanel = null;
+        initComponents();
     }
 
     public Tile(Tile pTile) {
         super(pTile.getImagePath(), pTile.getName(), pTile.getAmount(), pTile.getGameBox(), 1, 1, 1, 1);
         copy(pTile);
+        initComponents();
     }
+
+    private void initComponents() {
+
+        mPopupMenu = new JPopupMenu();
+
+        mNormalTile = new JMenuItem("Use normal tile");
+        mNormalTile.addActionListener(e -> {
+            setCurrentImage(getImageAtPos(Tile.NORMAL_IMAGE));
+            mMapPanel.repaint();
+        });
+
+        mGrayTile = new JMenuItem("Use gray tile");
+        mGrayTile.addActionListener(e -> {
+            setCurrentImage(getImageAtPos(Tile.GRAY_IMAGE));
+            mMapPanel.repaint();
+        });
+
+        mStartTile = new JMenuItem("Use start tile");
+        mStartTile.addActionListener(e -> {
+            setCurrentImage(getImageAtPos(Tile.START_IMAGE));
+            mMapPanel.repaint();
+        });
+
+        mGreenTile = new JMenuItem("Use green tile");
+        mGreenTile.addActionListener(e -> {
+            setCurrentImage(getImageAtPos(Tile.GREEN_IMAGE));
+            mMapPanel.repaint();
+        });
+
+        mVioletTile = new JMenuItem("Use violet tile");
+        mVioletTile.addActionListener(e -> {
+            setCurrentImage(getImageAtPos(Tile.VIOLET_IMAGE));
+            mMapPanel.repaint();
+        });
+
+        mPopupMenu.add(mNormalTile);
+        mPopupMenu.add(mGrayTile);
+        mPopupMenu.add(mStartTile);
+        mPopupMenu.add(mGreenTile);
+        mPopupMenu.add(mVioletTile);
+
+    }
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Paint
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
+
+    public void paint(Graphics g) {
+        // draw background
+        if (mCurrentImage != null) {
+            mCurrentImage = resize(mCurrentImage, mSize, mSize);
+            g.drawImage(mCurrentImage, mStartX, mStartY, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
+        }
+    }
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Static
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
 
     public static BufferedImage[] readImages(String pPicturePath, String pPictureType) {
         BufferedImage[] images = new BufferedImage[5];
@@ -75,30 +163,59 @@ public class Tile extends AQ_Object {
 
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
-     * Getter and Setter
+     * Rotate mehtods
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
-    public void setImages(BufferedImage[] pTilesImages) {
-        mTileImages = pTilesImages;
+    private BufferedImage rotate(BufferedImage pImg, double angle) {
+        if (pImg != null) {
+            int w = pImg.getWidth();
+            int h = pImg.getHeight();
+
+            BufferedImage rotated = new BufferedImage(w, h, pImg.getType());
+            Graphics2D graphic = rotated.createGraphics();
+            graphic.rotate(Math.toRadians(angle), w / 2, h / 2);
+            graphic.drawImage(pImg, null, 0, 0);
+            graphic.dispose();
+            return rotated;
+
+        }
+        return null;
     }
+
+    public void rotateRight() {
+        for (int i = 0; i < mTileImages.length; i++) {
+            BufferedImage rotatetd = rotate(mTileImages[i], 90);
+            mTileImages[i] = rotatetd;
+        }
+    }
+
+    public void rotateLeft() {
+        for (int i = 0; i < mTileImages.length; i++) {
+            BufferedImage rotatetd = rotate(mTileImages[i], -90);
+            mTileImages[i] = rotatetd;
+        }
+    }
+
+    public void rotate180() {
+        for (int i = 0; i < mTileImages.length; i++) {
+            BufferedImage rotatetd = rotate(mTileImages[i], 180);
+            mTileImages[i] = rotatetd;
+        }
+    }
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Getter
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
 
     public BufferedImage[] getImages() {
         return mTileImages;
     }
 
-    public void setPath(String pPath) {
-        mPath = pPath;
-    }
-
     public String getPath() {
         return mPath;
-    }
-
-    public BufferedImage[] loadImages() {
-        BufferedImage[] newImages = new BufferedImage[5];
-        newImages = readImages(mPath, FILE_TYPE_JPG);
-        return newImages;
     }
 
     public BufferedImage getCurrentImage() {
@@ -107,6 +224,61 @@ public class Tile extends AQ_Object {
 
     public BufferedImage getImageAtPos(int pPos) {
         return mTileImages[pPos];
+    }
+
+    public int getSelectedPos() {
+        return mSelectedImage;
+    }
+
+    private int getCurrentSize() {
+        int currentSize = 0;
+        for (AQ_Object o : mNormalObjects) {
+            if (o instanceof Monster) {
+                currentSize += ((Monster) o).getSize();
+            }
+        }
+        return currentSize;
+    }
+
+    public ArrayList<AQ_Object> getAqObecjts() {
+        return mNormalObjects;
+    }
+
+    public AQ_Object getAqObecjtAtPos(int pPos) {
+        return mNormalObjects.get(pPos);
+    }
+
+    public int getStartPosX() {
+        return mStartX;
+    }
+
+    public int getStartPosY() {
+        return mStartY;
+    }
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Setter
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
+
+    public void setStartPos(int pPosX, int pPosY) {
+        mStartX = pPosX;
+        mStartY = pPosY;
+    }
+
+    public void setImages(BufferedImage[] pTilesImages) {
+        mTileImages = pTilesImages;
+    }
+
+    public void setPath(String pPath) {
+        mPath = pPath;
+    }
+
+    public BufferedImage[] loadImages() {
+        BufferedImage[] newImages = new BufferedImage[5];
+        newImages = readImages(mPath, FILE_TYPE_JPG);
+        return newImages;
     }
 
     public void setSelectedPos(int pPos) {
@@ -121,8 +293,12 @@ public class Tile extends AQ_Object {
         mTileImages = pImg;
     }
 
-    public int getSelectedPos() {
-        return mSelectedImage;
+    public void setPopupMenuLocation(int pPosX, int pPosY) {
+        mPopupMenu.setLocation(pPosX, pPosY);
+    }
+
+    public void setShowPopup(boolean pShow) {
+        mPopupMenu.setVisible(pShow);
     }
 
     public void addAqObject(AQ_Object pObject) {
@@ -147,22 +323,20 @@ public class Tile extends AQ_Object {
         }
     }
 
-    private int getCurrentSize() {
-        int currentSize = 0;
-        for (AQ_Object o : mNormalObjects) {
-            if (o instanceof Monster) {
-                currentSize += ((Monster) o).getSize();
-            }
-        }
-        return currentSize;
+    public void setCurrentImage(BufferedImage pImg) {
+        mCurrentImage = pImg;
     }
 
-    public ArrayList<AQ_Object> getAqObecjts() {
-        return mNormalObjects;
+    public void setSize(int pSize) {
+        mSize = pSize;
     }
 
-    public AQ_Object getAqObecjtAtPos(int pPos) {
-        return mNormalObjects.get(pPos);
+    public int getSize() {
+        return mSize;
+    }
+
+    public void setMapPanel(MapPanel pMapPanel) {
+        mMapPanel = pMapPanel;
     }
 
     public void copy(Tile pTile) {
@@ -174,12 +348,7 @@ public class Tile extends AQ_Object {
         this.setSelectedPos(pTile.getSelectedPos());
         this.setPath(pTile.getPath());
         this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
-    }
-
-    public void paint(Graphics g) {
-        if (mCurrentImage != null) {
-            mCurrentImage = resize(mCurrentImage, Size, Size);
-            g.drawImage(mCurrentImage, 0, 0, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
-        }
+        this.setCurrentImage(deepCopy(pTile.getCurrentImage()));
+        this.setSize(pTile.getSize());
     }
 }

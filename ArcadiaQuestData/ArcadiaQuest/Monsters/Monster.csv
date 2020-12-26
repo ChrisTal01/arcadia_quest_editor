@@ -1,6 +1,6 @@
 Game;Name;Picture;Type;Size;Amount;PrefIconHeight;PrefIconWidth;PrefImageWidth;PrefImageHeight
 Arcadia Quest;Goblin Bogenschütze;Goblin_Bogenschütze.png;Minor Minion;1;6;75;75;45;45
-Arcadia Quest;Orc Marodeur;Ork_Marodeur.png;Minor Minion;1;8;90;75;60;50
+Arcadia Quest;Orc Marodeur;Ork_Marodeur.png;Minor Minion;1;8;90;75;60;55
 Arcadia Quest;Orc Hauptmann;Ork_Hauptmann.png;Minor Minion;1;2;100;75;75;50
 Arcadia Quest;Tiermensch mit Hammer;Tiermensch_Mit_Hammer.png;Major Minion;1;2;75;75;65;65
 Arcadia Quest;Tiermensch mit Speeren;Tiermensch_Mit_Speeren.png;Major Minion;1;2;75;75;65;65
