@@ -8,8 +8,6 @@ public class MapPanel extends JPanel {
     private static int mSize = 399;
 
     private TilePanel[] mTilePanels = new TilePanel[9];
-    private boolean mEntered;
-    private boolean mPressed;
     private MapPanel[] mNeighbors = { null, null, null, null };
 
     private JPopupMenu mPopupMenu;
@@ -24,8 +22,7 @@ public class MapPanel extends JPanel {
 
     public MapPanel(MapListener pListener) {
         this.setLayout(null);
-        mEntered = false;
-        mPressed = false;
+        mMap = null;
         mListener = pListener;
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
@@ -35,8 +32,6 @@ public class MapPanel extends JPanel {
     public MapPanel(Map pMap, MapListener pListener) {
         this.setLayout(null);
         mMap = pMap;
-        mEntered = false;
-        mPressed = false;
         mListener = pListener;
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
@@ -60,7 +55,7 @@ public class MapPanel extends JPanel {
             this.add(mTilePanels[i]);
         }
         // set Neighbors
-        setNeighbors();
+        initNeighbors();
 
         // PopUpMenu
 
@@ -187,24 +182,12 @@ public class MapPanel extends JPanel {
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
-    public boolean hasEntered() {
-        return mEntered;
-    }
-
-    public void setEntered(boolean pState) {
-        mEntered = pState;
-    }
-
-    public boolean isPressed() {
-        return mPressed;
-    }
-
-    public void setPressed(boolean pState) {
-        mPressed = pState;
-    }
-
     public TilePanel[] getTilePanels() {
         return mTilePanels;
+    }
+
+    public TilePanel getTilePanelAtPos(int pPos) {
+        return mTilePanels[pPos];
     }
 
     public static int getSizes() {
@@ -254,7 +237,7 @@ public class MapPanel extends JPanel {
         }
     }
 
-    private void setNeighbors() {
+    private void initNeighbors() {
         // 0
         mTilePanels[0].setNeighborAtPos(mTilePanels[1], TilePanel.RIGHT);
         mTilePanels[0].setNeighborAtPos(mTilePanels[3], TilePanel.BOTTOM);
@@ -274,10 +257,10 @@ public class MapPanel extends JPanel {
         mTilePanels[3].setNeighborAtPos(mTilePanels[6], TilePanel.BOTTOM);
 
         // 4
-        mTilePanels[4].setNeighborAtPos(mTilePanels[0], TilePanel.TOP);
-        mTilePanels[4].setNeighborAtPos(mTilePanels[1], TilePanel.RIGHT);
-        mTilePanels[4].setNeighborAtPos(mTilePanels[3], TilePanel.BOTTOM);
-        mTilePanels[4].setNeighborAtPos(mTilePanels[0], TilePanel.LEFT);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[1], TilePanel.TOP);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[5], TilePanel.RIGHT);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[7], TilePanel.BOTTOM);
+        mTilePanels[4].setNeighborAtPos(mTilePanels[3], TilePanel.LEFT);
 
         // 5
         mTilePanels[5].setNeighborAtPos(mTilePanels[2], TilePanel.TOP);
@@ -296,5 +279,99 @@ public class MapPanel extends JPanel {
         // 8
         mTilePanels[8].setNeighborAtPos(mTilePanels[5], TilePanel.TOP);
         mTilePanels[8].setNeighborAtPos(mTilePanels[7], TilePanel.LEFT);
+    }
+
+    public void setNeighbors() {
+        // Top
+        MapPanel mp;
+        mp = mNeighbors[0];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[0].setNeighborAtPos(mp.getTilePanelAtPos(6), TilePanel.TOP);
+            mTilePanels[1].setNeighborAtPos(mp.getTilePanelAtPos(7), TilePanel.TOP);
+            mTilePanels[2].setNeighborAtPos(mp.getTilePanelAtPos(8), TilePanel.TOP);
+            mp.getTilePanelAtPos(6).setNeighborAtPos(mTilePanels[0], TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(7).setNeighborAtPos(mTilePanels[1], TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(8).setNeighborAtPos(mTilePanels[2], TilePanel.BOTTOM);
+        }
+
+        // Right
+        mp = mNeighbors[1];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[2].setNeighborAtPos(mp.getTilePanelAtPos(0), TilePanel.RIGHT);
+            mTilePanels[5].setNeighborAtPos(mp.getTilePanelAtPos(3), TilePanel.RIGHT);
+            mTilePanels[8].setNeighborAtPos(mp.getTilePanelAtPos(6), TilePanel.RIGHT);
+            mp.getTilePanelAtPos(0).setNeighborAtPos(mTilePanels[2], TilePanel.LEFT);
+            mp.getTilePanelAtPos(3).setNeighborAtPos(mTilePanels[5], TilePanel.LEFT);
+            mp.getTilePanelAtPos(6).setNeighborAtPos(mTilePanels[8], TilePanel.LEFT);
+        }
+
+        // Bottom
+        mp = mNeighbors[2];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[6].setNeighborAtPos(mp.getTilePanelAtPos(0), TilePanel.BOTTOM);
+            mTilePanels[7].setNeighborAtPos(mp.getTilePanelAtPos(1), TilePanel.BOTTOM);
+            mTilePanels[8].setNeighborAtPos(mp.getTilePanelAtPos(2), TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(0).setNeighborAtPos(mTilePanels[6], TilePanel.TOP);
+            mp.getTilePanelAtPos(1).setNeighborAtPos(mTilePanels[7], TilePanel.TOP);
+            mp.getTilePanelAtPos(2).setNeighborAtPos(mTilePanels[8], TilePanel.TOP);
+        }
+
+        // Left
+        mp = mNeighbors[3];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[0].setNeighborAtPos(mp.getTilePanelAtPos(2), TilePanel.LEFT);
+            mTilePanels[3].setNeighborAtPos(mp.getTilePanelAtPos(5), TilePanel.LEFT);
+            mTilePanels[6].setNeighborAtPos(mp.getTilePanelAtPos(8), TilePanel.LEFT);
+            mp.getTilePanelAtPos(2).setNeighborAtPos(mTilePanels[0], TilePanel.RIGHT);
+            mp.getTilePanelAtPos(5).setNeighborAtPos(mTilePanels[3], TilePanel.RIGHT);
+            mp.getTilePanelAtPos(8).setNeighborAtPos(mTilePanels[6], TilePanel.RIGHT);
+        }
+    }
+
+    public void removeNeighbors() {
+        // Top
+        MapPanel mp;
+        mp = mNeighbors[0];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[0].setNeighborAtPos(null, TilePanel.TOP);
+            mTilePanels[1].setNeighborAtPos(null, TilePanel.TOP);
+            mTilePanels[2].setNeighborAtPos(null, TilePanel.TOP);
+            mp.getTilePanelAtPos(6).setNeighborAtPos(null, TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(7).setNeighborAtPos(null, TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(8).setNeighborAtPos(null, TilePanel.BOTTOM);
+        }
+
+        // Right
+        mp = mNeighbors[1];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[2].setNeighborAtPos(null, TilePanel.RIGHT);
+            mTilePanels[5].setNeighborAtPos(null, TilePanel.RIGHT);
+            mTilePanels[8].setNeighborAtPos(null, TilePanel.RIGHT);
+            mp.getTilePanelAtPos(0).setNeighborAtPos(null, TilePanel.LEFT);
+            mp.getTilePanelAtPos(3).setNeighborAtPos(null, TilePanel.LEFT);
+            mp.getTilePanelAtPos(6).setNeighborAtPos(null, TilePanel.LEFT);
+        }
+
+        // Bottom
+        mp = mNeighbors[2];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[6].setNeighborAtPos(null, TilePanel.BOTTOM);
+            mTilePanels[7].setNeighborAtPos(null, TilePanel.BOTTOM);
+            mTilePanels[8].setNeighborAtPos(null, TilePanel.BOTTOM);
+            mp.getTilePanelAtPos(0).setNeighborAtPos(null, TilePanel.TOP);
+            mp.getTilePanelAtPos(1).setNeighborAtPos(null, TilePanel.TOP);
+            mp.getTilePanelAtPos(2).setNeighborAtPos(null, TilePanel.TOP);
+        }
+
+        // Left
+        mp = mNeighbors[3];
+        if (mp != null && mp.getMap() != null) {
+            mTilePanels[0].setNeighborAtPos(null, TilePanel.LEFT);
+            mTilePanels[3].setNeighborAtPos(null, TilePanel.LEFT);
+            mTilePanels[6].setNeighborAtPos(null, TilePanel.LEFT);
+            mp.getTilePanelAtPos(2).setNeighborAtPos(null, TilePanel.RIGHT);
+            mp.getTilePanelAtPos(5).setNeighborAtPos(null, TilePanel.RIGHT);
+            mp.getTilePanelAtPos(8).setNeighborAtPos(null, TilePanel.RIGHT);
+        }
     }
 }

@@ -150,5 +150,4 @@ public class Tile extends AQ_Object {
         this.setPath(pTile.getPath());
         this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
     }
-
 }

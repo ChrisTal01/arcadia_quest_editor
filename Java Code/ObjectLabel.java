@@ -26,7 +26,7 @@ public class ObjectLabel extends JLabel {
         this.setPreferredSize(new Dimension(230, 75));
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
-        BufferedImage img = TilePanel.readImage(mObject.getImagePath());
+        BufferedImage img = AQ_Object.readImage(mObject.getImagePath());
 
         if (pObject instanceof Door) {
             this.setVerticalTextPosition(JLabel.BOTTOM); // set text Top, Center, Bottom of ImgaeIcon
