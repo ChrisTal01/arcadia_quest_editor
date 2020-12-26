@@ -1,12 +1,9 @@
 
-import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -164,7 +161,7 @@ public class TilePanel extends JPanel {
                 if (amount == 1) {
 
                     ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.6), (int) (this.getHeight() / 2.6)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
 
                     xStart = halfSize - img.getWidth() / 2;
@@ -185,11 +182,11 @@ public class TilePanel extends JPanel {
                     ////
 
                     ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.6), (int) (this.getHeight() / 2.6)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
                     // the added number gives a litte offset
-                    xStart = halfSize + 5;
-                    yStart = 7;
+                    xStart = this.getWidth() - img.getWidth() - 5;
+                    yStart = 5;
                     xEnd = img.getWidth();
                     yEnd = img.getHeight();
                     g.drawImage(img, xStart, yStart, xEnd, yEnd, this);
@@ -204,10 +201,10 @@ public class TilePanel extends JPanel {
                     ////
 
                     ob = mNormalObjects.get(1);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.6), (int) (this.getHeight() / 2.6)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
-                    xStart = 7;
-                    yStart = halfSize + 5;
+                    xStart = 5;
+                    yStart = this.getWidth() - img.getWidth() - 5;
                     xEnd = img.getWidth();
                     yEnd = img.getHeight();
                     // the added number gives a litte offset
@@ -224,11 +221,10 @@ public class TilePanel extends JPanel {
                         ////
 
                         ob = mNormalObjects.get(2);
-                        ob.setImage(
-                                resize(ob.getImage(), (int) (this.getHeight() / 2.6), (int) (this.getHeight() / 2.6)));
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                         img = ob.getImage();
-                        xStart = halfSize + 5;
-                        yStart = halfSize + 5;
+                        xStart = this.getWidth() - img.getWidth() - 5;
+                        yStart = this.getHeight() - img.getHeight() - 5;
                         xEnd = img.getWidth();
                         yEnd = img.getHeight();
                         // the added number gives a litte offset
@@ -245,8 +241,7 @@ public class TilePanel extends JPanel {
                         ////
 
                         ob = mNormalObjects.get(3);
-                        ob.setImage(
-                                resize(ob.getImage(), (int) (this.getHeight() / 2.6), (int) (this.getHeight() / 2.6)));
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                         img = ob.getImage();
                         xStart = 5;
                         yStart = 5;

@@ -17,6 +17,8 @@ public class AQ_Object {
 
     private int mPrefIconHeight;
     private int mPrefIconWidth;
+    private int mPrefImageHeight;
+    private int mPrefImageWidth;
 
     public static final int ARCADIA_QUEST = 1;
     public static final int INFERNO = 2;
@@ -34,7 +36,7 @@ public class AQ_Object {
     public static final int OTHER = 12;
 
     public AQ_Object(String pImagePath, String pName, int pAmount, int pGameBox, int pPrefIconWidth,
-            int pPrefIconHeight) {
+            int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
         mImage = readImage(pImagePath);
         mImagePath = pImagePath;
         mName = pName;
@@ -42,6 +44,8 @@ public class AQ_Object {
         mGameBox = pGameBox;
         mPrefIconWidth = pPrefIconWidth;
         mPrefIconHeight = pPrefIconHeight;
+        mPrefImageWidth = pPrefImageWidth;
+        mPrefImageHeight = pPrefImageHeight;
 
     }
 
@@ -116,6 +120,22 @@ public class AQ_Object {
         return mPrefIconHeight;
     }
 
+    public void setPrefImageWidth(int pPref) {
+        mPrefImageWidth = pPref;
+    }
+
+    public void setPrefImageHeight(int pPref) {
+        mPrefImageHeight = pPref;
+    }
+
+    public int getPrefImageWidth() {
+        return mPrefImageWidth;
+    }
+
+    public int getPrefImageHeight() {
+        return mPrefImageHeight;
+    }
+
     public static BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
@@ -131,6 +151,8 @@ public class AQ_Object {
         setImagePath(pObject.getImagePath());
         setPrefIconWidth(pObject.getPrefIconWidth());
         setPrefIconHeight(pObject.getPrefIconHeight());
+        setPrefImageWidth(pObject.getPrefImageWidth());
+        setPrefImageHeight(pObject.getPrefImageHeight());
     }
 
 }
