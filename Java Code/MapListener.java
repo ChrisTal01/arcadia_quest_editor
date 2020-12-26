@@ -4,12 +4,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
 
 public class MapListener implements MouseMotionListener, MouseListener, KeyListener {
 
     // Current means under the cursor or dragged
+
     private MapLabel mCurrentMapLabel;
     private MapPanel mCurrentMapPanel;
     private TilePanel mCurrentTilePanel;
@@ -17,6 +22,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     private AQ_Object mCurrentAqObject;
     private Map mCurrentMap;
     private Door mCurrentDoor;
+    private JPanel mCurrentMainPanel;
 
     // Selected means clicked on
     private TilePanel mSelectedTilePanel;
@@ -26,6 +32,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     private boolean mMenuOpen;
     private TilePanel mTilePanelMenu;
     private MapPanel mMapPanelMenu;
+
+    private ArrayList<MapPanel> mMapPanels = new ArrayList<>();
 
     public MapListener() {
         mCurrentMapPanel = null;
@@ -66,6 +74,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
+                for (MapPanel mp : mMapPanels) {
+                    mp.setShowDoorOutline(true);
+                }
             } else {
                 mCurrentAqObject = mCurrentObjectLabel.getAqObject();
             }
@@ -136,10 +147,21 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         // Release on MapPanel
         if (mCurrentMap != null && mCurrentMapPanel != null) {
             mCurrentMapPanel.setMap(mCurrentMap);
+            mCurrentMapPanel.setNeighbors();
+            mMapPanels.add(mCurrentMapPanel);
         }
         // Release on TilePanel
-        if (mCurrentTilePanel != null && mCurrentAqObject != null) {
-            mCurrentTilePanel.addAqObject(mCurrentAqObject);
+        if (mCurrentTilePanel != null) {
+            if (mCurrentAqObject != null) {
+                mCurrentTilePanel.addAqObject(mCurrentAqObject);
+            }
+            if (mCurrentDoor != null) {
+                mCurrentTilePanel.setDoorAtLocation(mCurrentDoor,
+                        (int) (MouseInfo.getPointerInfo().getLocation().getX()
+                                - mCurrentTilePanel.getLocationOnScreen().getX()),
+                        (int) (MouseInfo.getPointerInfo().getLocation().getY()
+                                - mCurrentTilePanel.getLocationOnScreen().getY()));
+            }
         }
         if (mCurrentTilePanel != null) {
 
@@ -147,6 +169,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         mCurrentMap = null;
         mCurrentAqObject = null;
         mCurrentDoor = null;
+        for (MapPanel mp : mMapPanels) {
+            mp.setShowDoorOutline(false);
+        }
     }
 
     @Override
@@ -160,10 +185,12 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             TilePanel tile = (TilePanel) e.getSource();
             mCurrentTilePanel = tile;
             mCurrentMapPanel = (MapPanel) tile.getParent();
+            mCurrentMainPanel = (JPanel) mCurrentMapPanel.getParent();
         }
         // Enter MapPanel
         if (e.getSource() instanceof MapPanel) {
             mCurrentMapPanel = (MapPanel) e.getSource();
+            mCurrentMainPanel = (JPanel) mCurrentMapPanel.getParent();
         }
 
         // Enter MapLabel

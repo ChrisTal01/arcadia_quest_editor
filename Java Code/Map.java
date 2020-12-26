@@ -7,7 +7,7 @@ public class Map extends AQ_Object {
 
     public Map(String pPath, String pName, int pGameBox) {
         super(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()) + "\\map\\"
-                + pName.replace(" ", "_") + "_Normal.png", pName, 1, pGameBox, 1, 1);
+                + pName.replace(" ", "_") + "_Normal.png", pName, 1, pGameBox, 1, 1, 1, 1);
 
         for (int i = 0; i < mTiles.length; i++) {
             mTiles[i] = new Tile(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()),
@@ -17,7 +17,7 @@ public class Map extends AQ_Object {
     }
 
     public Map(Map pMap) {
-        super(pMap.getImagePath(), pMap.getName(), pMap.getAmount(), pMap.getGameBox(), 1, 1);
+        super(pMap.getImagePath(), pMap.getName(), pMap.getAmount(), pMap.getGameBox(), 1, 1, 1, 1);
         copy(pMap);
     }
 

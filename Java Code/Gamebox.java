@@ -25,7 +25,6 @@ public class Gamebox {
     public static final int FALL_OF_ARCADIA = 7;
 
     public Gamebox(String pPath, String pName, int pIndex) {
-        System.out.println(pPath);
         mName = pName;
         mIndex = pIndex;
         mPath = pPath;
@@ -56,9 +55,10 @@ public class Gamebox {
                 if (skippedFirst) {
                     String[] data = row.split(";");
                     // (0)Game, (1)Name, (2)Picture, (3)Type, (4)Size, (5)Amount,(6) PrefIconWidht,
-                    // (7) PrefIconHeight
+                    // (7) PrefIconHeight,(8) PrefImageWidth, (9) PrefImageHeight
                     newMonster.add(new Monster(pFile + data[2], data[1], Integer.parseInt(data[5]), mIndex,
-                            Integer.parseInt(data[4]), data[3], Integer.parseInt(data[6]), Integer.parseInt(data[7])));
+                            Integer.parseInt(data[4]), data[3], Integer.parseInt(data[6]), Integer.parseInt(data[7]),
+                            Integer.parseInt(data[8]), Integer.parseInt(data[9])));
                 } else {
                     skippedFirst = true;
                 }
@@ -92,15 +92,17 @@ public class Gamebox {
             while ((row = csvReader.readLine()) != null) {
                 if (skippedFirst) {
                     String[] data = row.split(";");
-                    // (0)Game, (1)Name, (2)Picture,(3)Picture2, (4)Amount, (5)PrefIconWidht,(6)
-                    // PrefIconHeight,
+                    // (0)Game, (1)Name, (2)Picture, (3)Picture2, (4)Amount, (5)PrefIconWidht, (6)
+                    // PrefIconHeight, (7) PrefImageWidth, (8) PrefImageHeight
                     if (data[1].contains("Tür") || data[1].contains("Door")) {
                         // if name contains Tür or Door
                         newObject.add(new Door(pFile + data[2], pFile + data[3], data[1], Integer.parseInt(data[4]),
-                                mIndex, Integer.parseInt(data[5]), Integer.parseInt(data[6])));
+                                mIndex, Integer.parseInt(data[5]), Integer.parseInt(data[6]), Integer.parseInt(data[7]),
+                                Integer.parseInt(data[8])));
                     } else {
                         newObject.add(new AQ_Object(pFile + data[2], data[1], Integer.parseInt(data[4]), mIndex,
-                                Integer.parseInt(data[5]), Integer.parseInt(data[6])));
+                                Integer.parseInt(data[5]), Integer.parseInt(data[6]), Integer.parseInt(data[7]),
+                                Integer.parseInt(data[8])));
                     }
                 } else {
                     skippedFirst = true;

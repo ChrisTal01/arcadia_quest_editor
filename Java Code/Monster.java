@@ -25,16 +25,16 @@ public class Monster extends AQ_Object {
     public static final String OTHER_MONSTER_STRING = "Other Monster";
 
     public Monster(String pPath, String pName, int pAmount, int pGameBox, int pSize, int pMonsterType,
-            int pPrefIconWidth, int pPrefIconHeight) {
-        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight);
+            int pPrefIconWidth, int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
+        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mSize = pSize;
         mMonsterType = pMonsterType;
         convertToMonsterTypeString(pMonsterType);
     }
 
     public Monster(String pPath, String pName, int pAmount, int pGameBox, int pSize, String pMonsterTypeString,
-            int pPrefIconWidth, int pPrefIconHeight) {
-        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight);
+            int pPrefIconWidth, int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
+        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mSize = pSize;
         mMonsterTypeString = pMonsterTypeString;
         convertToMonsterType(pMonsterTypeString);
@@ -43,7 +43,8 @@ public class Monster extends AQ_Object {
 
     public Monster(Monster pMonster) {
         super(pMonster.getImagePath(), pMonster.getName(), pMonster.getAmount(), pMonster.getGameBox(),
-                pMonster.getPrefIconWidth(), pMonster.getPrefIconWidth());
+                pMonster.getPrefIconWidth(), pMonster.getPrefIconHeight(), pMonster.getPrefImageWidth(),
+                pMonster.getPrefImageHeight());
         copy(pMonster);
     }
 

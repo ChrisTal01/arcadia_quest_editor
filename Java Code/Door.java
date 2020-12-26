@@ -7,15 +7,15 @@ public class Door extends AQ_Object {
     private BufferedImage mVertikalImage;
 
     public Door(String pPath, String pVertikalImagePath, String pName, int pAmount, int pGameBox, int pPrefIconWidth,
-            int pPrefIconHeight) {
-        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight);
+            int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
+        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mCounterPart = null;
         mVertikalImage = AQ_Object.readImage(pVertikalImagePath);
     }
 
     public Door(Door pDoor) {
         super(pDoor.getImagePath(), pDoor.getName(), pDoor.getAmount(), pDoor.getGameBox(), pDoor.getPrefIconWidth(),
-                pDoor.getPrefIconHeight());
+                pDoor.getPrefIconHeight(), pDoor.getPrefImageWidth(), pDoor.getPrefImageHeight());
         copy(pDoor);
     }
 

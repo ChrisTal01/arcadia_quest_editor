@@ -1,12 +1,9 @@
 
-import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,14 +11,16 @@ import java.awt.Color;
 import java.awt.Image;
 
 public class TilePanel extends JPanel {
+    // Top, Right, Bottom, Left
+    private TilePanel[] mNeighbors = { null, null, null, null };
     private BufferedImage mSelectedImage;
     private static int size = 5;
     private BufferedImage[] mTileImages = new BufferedImage[size];
     private Tile mTile;
-    private boolean mEntered = false;
+    private boolean mShowDoorOutline = false;
+    private Door[] mDoors = { null, null, null, null };
 
     private ArrayList<AQ_Object> mNormalObjects = new ArrayList<>();
-    private ArrayList<Door> mDoorObjects = new ArrayList<>();
     private AQ_Object mSelectedObject;
     private StoneCard mStoneCard;
 
@@ -31,6 +30,15 @@ public class TilePanel extends JPanel {
     private JMenuItem mStartTile;
     private JMenuItem mGreenTile;
     private JMenuItem mVioletTile;
+
+    public static int TOP = 0;
+    public static int RIGHT = 1;
+    public static int BOTTOM = 2;
+    public static int LEFT = 3;
+
+    private int mDoorEdgeSpace = 3;
+    private int mDoorHeight = 26;
+    private int mDoorWidth;
 
     public TilePanel(Tile pTile) {
         mTile = pTile;
@@ -91,7 +99,7 @@ public class TilePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        mDoorWidth = this.getWidth() - mDoorEdgeSpace;
         int halfSize = this.getWidth() / 2;
 
         // draw Background first
@@ -99,7 +107,40 @@ public class TilePanel extends JPanel {
             mSelectedImage = resize(mSelectedImage, this.getHeight(), this.getWidth());
             g.drawImage(mSelectedImage, 0, 0, mSelectedImage.getWidth(), mSelectedImage.getHeight(), this);
 
-            // draf Cards
+            // draw Doors
+            // Top
+            if (mDoors[0] != null) {
+                Door d = mDoors[0];
+                d.setImage(resize(d.getImage(), mDoorWidth, mDoorHeight));
+                BufferedImage img = d.getImage();
+                g.drawImage(img, mDoorEdgeSpace, -mDoorHeight / 2, img.getWidth(), img.getHeight(), this);
+            }
+            // Bottom
+            if (mDoors[2] != null) {
+                Door d = mDoors[2];
+                d.setImage(resize(d.getImage(), mDoorWidth, mDoorHeight));
+                BufferedImage img = d.getImage();
+                g.drawImage(img, mDoorEdgeSpace, this.getHeight() - mDoorHeight / 2, img.getWidth(), img.getHeight(),
+                        this);
+            }
+
+            // Right
+            if (mDoors[1] != null) {
+                Door d = mDoors[1];
+                d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
+                BufferedImage img = d.getVertikalImage();
+                g.drawImage(img, this.getWidth() - (mDoorHeight / 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(),
+                        this);
+            }
+            // Left
+            if (mDoors[3] != null) {
+                Door d = mDoors[3];
+                d.setVertikalImage(resize(d.getVertikalImage(), mDoorHeight, mDoorWidth));
+                BufferedImage img = d.getVertikalImage();
+                g.drawImage(img, -(mDoorHeight / 2), mDoorEdgeSpace, img.getWidth(), img.getHeight(), this);
+            }
+
+            // draw Stone Cards
             if (mStoneCard != null) {
                 g.drawImage(mStoneCard.getImage(), 0, 0, mStoneCard.getImage().getWidth(),
                         mStoneCard.getImage().getHeight(), this);
@@ -120,7 +161,7 @@ public class TilePanel extends JPanel {
                 if (amount == 1) {
 
                     ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.4), (int) (this.getHeight() / 2.4)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
 
                     xStart = halfSize - img.getWidth() / 2;
@@ -141,11 +182,11 @@ public class TilePanel extends JPanel {
                     ////
 
                     ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.4), (int) (this.getHeight() / 2.4)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
                     // the added number gives a litte offset
-                    xStart = halfSize + 5;
-                    yStart = 7;
+                    xStart = this.getWidth() - img.getWidth() - 5;
+                    yStart = 5;
                     xEnd = img.getWidth();
                     yEnd = img.getHeight();
                     g.drawImage(img, xStart, yStart, xEnd, yEnd, this);
@@ -160,10 +201,10 @@ public class TilePanel extends JPanel {
                     ////
 
                     ob = mNormalObjects.get(1);
-                    ob.setImage(resize(ob.getImage(), (int) (this.getHeight() / 2.4), (int) (this.getHeight() / 2.4)));
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                     img = ob.getImage();
-                    xStart = 7;
-                    yStart = halfSize + 5;
+                    xStart = 5;
+                    yStart = this.getWidth() - img.getWidth() - 5;
                     xEnd = img.getWidth();
                     yEnd = img.getHeight();
                     // the added number gives a litte offset
@@ -180,11 +221,10 @@ public class TilePanel extends JPanel {
                         ////
 
                         ob = mNormalObjects.get(2);
-                        ob.setImage(
-                                resize(ob.getImage(), (int) (this.getHeight() / 2.4), (int) (this.getHeight() / 2.4)));
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                         img = ob.getImage();
-                        xStart = halfSize + 5;
-                        yStart = halfSize + 5;
+                        xStart = this.getWidth() - img.getWidth() - 5;
+                        yStart = this.getHeight() - img.getHeight() - 5;
                         xEnd = img.getWidth();
                         yEnd = img.getHeight();
                         // the added number gives a litte offset
@@ -201,8 +241,7 @@ public class TilePanel extends JPanel {
                         ////
 
                         ob = mNormalObjects.get(3);
-                        ob.setImage(
-                                resize(ob.getImage(), (int) (this.getHeight() / 2.4), (int) (this.getHeight() / 2.4)));
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
                         img = ob.getImage();
                         xStart = 5;
                         yStart = 5;
@@ -220,8 +259,55 @@ public class TilePanel extends JPanel {
 
                 }
             }
-        }
 
+            if (mShowDoorOutline) {
+
+                int xStart;
+                int yStart;
+                int xEnd;
+                int yEnd;
+                // draw Door outline
+                // Top
+                if (mNeighbors[0] != null && mDoors[0] == null) {
+                    xStart = 5;
+                    yStart = -10;
+                    xEnd = this.getWidth() - 2 * xStart;
+                    yEnd = mDoorHeight;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Right
+                if (mNeighbors[1] != null && mDoors[1] == null) {
+                    xStart = this.getHeight() - 10;
+                    yStart = 15;
+                    xEnd = 20;
+                    yEnd = this.getHeight() - 2 * yStart;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Bottom
+                if (mNeighbors[2] != null && mDoors[2] == null) {
+                    xStart = 5;
+                    yStart = this.getHeight() - mDoorHeight / 2;
+                    xEnd = this.getWidth() - 2 * xStart;
+                    yEnd = mDoorHeight;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Left
+                if (mNeighbors[3] != null && mDoors[3] == null) {
+                    xStart = -10;
+                    yStart = 15;
+                    xEnd = 20;
+                    yEnd = this.getHeight() - 2 * yStart;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+            }
+        }
     }
 
     public static BufferedImage resize(BufferedImage img, int width, int height) {
@@ -273,42 +359,6 @@ public class TilePanel extends JPanel {
         setSelectedImage(mTile.getSelectedPos());
     }
 
-    public static BufferedImage readImage(String pPicturePath, int i, String pPictureType) {
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(new File(pPicturePath + i + pPictureType));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return image;
-    }
-
-    public static BufferedImage readImage(String pPicturePath) {
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(new File(pPicturePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return image;
-    }
-
-    public static BufferedImage[] readImages(String pPicturePath, String pPictureName, int p, String pPictureType) {
-        BufferedImage[] images = new BufferedImage[size];
-        try {
-            for (int i = 0; i < images.length; i++) {
-                images[i] = ImageIO
-                        .read(new File(pPicturePath + p + "\\" + pPictureName + p + Tile.TILE_TYPES[i] + pPictureType));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return images;
-    }
-
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
      * Getter and Setter
@@ -341,12 +391,10 @@ public class TilePanel extends JPanel {
         return mNormalObjects;
     }
 
-    public boolean hasEntered() {
-        return mEntered;
-    }
-
-    public void setEntered(boolean pState) {
-        mEntered = pState;
+    public void setShowDoorOutline(boolean pState) {
+        mShowDoorOutline = pState;
+        revalidate();
+        repaint();
     }
 
     public void addAqObject(AQ_Object pObejct) {
@@ -381,7 +429,7 @@ public class TilePanel extends JPanel {
             return null;
         }
         if (mNormalObjects.size() == 1) {
-            // picture in the center of the Panel
+            // picture in the center of the panel
             o = mNormalObjects.get(0);
             img = o.getImage();
             startW = halfPanelSize - img.getWidth() / 2;
@@ -395,7 +443,7 @@ public class TilePanel extends JPanel {
             mSelectedObject = null;
             return null;
         } else {
-            // picture in the top Right Corner
+            // picture in the top right-hand corner
             o = mNormalObjects.get(0);
             img = o.getImage();
             startW = halfPanelSize + 5;
@@ -406,6 +454,7 @@ public class TilePanel extends JPanel {
                 repaint();
                 return o;
             }
+            // picture in the bottom left-hand corner
             o = mNormalObjects.get(1);
             img = o.getImage();
             startW = 7;
@@ -417,6 +466,7 @@ public class TilePanel extends JPanel {
                 return o;
             }
             if (mNormalObjects.size() >= 3) {
+                // picture in the bottom right-hand Corner
                 o = mNormalObjects.get(2);
                 img = o.getImage();
                 startW = halfPanelSize + 5;
@@ -427,6 +477,7 @@ public class TilePanel extends JPanel {
                     repaint();
                     return o;
                 }
+                // picture in the top left-hand corner
                 if (mNormalObjects.size() == 4) {
                     o = mNormalObjects.get(3);
                     img = o.getImage();
@@ -445,9 +496,91 @@ public class TilePanel extends JPanel {
         }
     }
 
+    public Door getDoorAtLocation(int pPosX, int pPosY) {
+        Door d;
+        // TODO
+        return null;
+    }
+
+    public void setDoorAtLocation(Door pDoor, int pPosX, int pPosY) {
+        int xStart;
+        int yStart;
+        int xEnd;
+        int yEnd;
+
+        // Top
+        xStart = 5;
+        yStart = 0;
+        xEnd = this.getWidth() - 2 * xStart;
+        yEnd = mDoorHeight;
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Top");
+            mDoors[0] = pDoor;
+            if (mNeighbors[TOP] != null) {
+                mNeighbors[TOP].setDoorAtPos(pDoor, BOTTOM);
+            }
+        }
+
+        // Right
+        xStart = this.getWidth() - mDoorHeight / 2;
+        yStart = mDoorEdgeSpace;
+        xEnd = this.getWidth();
+        yEnd = this.getHeight() - mDoorEdgeSpace;
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Right");
+            mDoors[1] = pDoor;
+            if (mNeighbors[RIGHT] != null) {
+                System.out.println("Test");
+                mNeighbors[RIGHT].setDoorAtPos(pDoor, LEFT);
+            }
+        }
+
+        // Bottom
+        xStart = 5;
+        yStart = this.getHeight() - mDoorHeight / 2;
+        xEnd = this.getWidth() - xStart;
+        yEnd = this.getHeight();
+        System.out.println("xEnd = " + xEnd + "; yEnd = " + yEnd);
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Bottom");
+            mDoors[2] = pDoor;
+            if (mNeighbors[BOTTOM] != null) {
+                mNeighbors[BOTTOM].setDoorAtPos(pDoor, TOP);
+            }
+        }
+
+        // Left
+        xStart = 0;
+        yStart = mDoorEdgeSpace;
+        xEnd = mDoorHeight / 2;
+        yEnd = this.getHeight() - mDoorEdgeSpace;
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Left");
+            mDoors[3] = pDoor;
+            if (mNeighbors[LEFT] != null) {
+                System.out.println("Test");
+                mNeighbors[LEFT].setDoorAtPos(pDoor, RIGHT);
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
     public void deSelectAqObject() {
         mSelectedObject = null;
         repaint();
+    }
+
+    public void setNeighborAtPos(TilePanel pTilePanel, int pPos) {
+        mNeighbors[pPos] = pTilePanel;
+    }
+
+    public TilePanel getNeighborAtPos(int pPos) {
+        return mNeighbors[pPos];
+    }
+
+    public void setDoorAtPos(Door pDoor, int pPos) {
+        mDoors[pPos] = pDoor;
     }
 
     public void setTile(Tile pTile) {

@@ -13,14 +13,15 @@ public class StoneCard extends AQ_Object {
     private static final int OTHER_STONE_CARD = 7;
 
     public StoneCard(String pPath, String pName, int pAmount, int pGameBox, int pStoneType, int pPrefIconWidth,
-            int pPrefIconHeight) {
-        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight);
+            int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
+        super(pPath, pName, pAmount, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mStoneType = pStoneType;
     }
 
     public StoneCard(StoneCard pStoneCard) {
         super(pStoneCard.getImagePath(), pStoneCard.getName(), pStoneCard.getAmount(), pStoneCard.getGameBox(),
-                pStoneCard.getPrefIconWidth(), pStoneCard.getPrefIconHeight());
+                pStoneCard.getPrefIconWidth(), pStoneCard.getPrefIconHeight(), pStoneCard.getPrefImageWidth(),
+                pStoneCard.getPrefImageHeight());
         copy(pStoneCard);
     }
 

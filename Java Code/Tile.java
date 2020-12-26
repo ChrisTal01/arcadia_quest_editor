@@ -23,7 +23,7 @@ public class Tile extends AQ_Object {
 
     public Tile(String pImagePath, String pName, int pGameBox) {
         super(pImagePath + "\\img" + pName + "\\img" + pName + TILE_TYPES[GRAY_IMAGE] + FILE_TYPE_JPG, pName, 1,
-                pGameBox, 1, 1);
+                pGameBox, 1, 1, 1, 1);
         mPath = pImagePath + "\\img" + pName + "\\img" + pName;
         mSelectedImage = GRAY_IMAGE;
         mTileImages = readImages(mPath, FILE_TYPE_JPG);
@@ -31,7 +31,7 @@ public class Tile extends AQ_Object {
     }
 
     public Tile(Tile pTile) {
-        super(pTile.getImagePath(), pTile.getName(), pTile.getAmount(), pTile.getGameBox(), 1, 1);
+        super(pTile.getImagePath(), pTile.getName(), pTile.getAmount(), pTile.getGameBox(), 1, 1, 1, 1);
         copy(pTile);
     }
 
@@ -150,5 +150,4 @@ public class Tile extends AQ_Object {
         this.setPath(pTile.getPath());
         this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
     }
-
 }
