@@ -201,16 +201,16 @@ public class MainFrame extends JFrame {
         for (int i = 0; i < mMapPanels.length; i++) {
             for (int j = 0; j < mMapPanels[i].length; j++) {
                 if (j - 1 >= 0) {
-                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j - 1], TilePanel.TOP);
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j - 1], Tile.TOP);
                 }
                 if (i + 1 < mMapPanels.length) {
-                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i + 1][j], TilePanel.RIGHT);
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i + 1][j], Tile.RIGHT);
                 }
                 if (j + 1 < mMapPanels[i].length) {
-                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j + 1], TilePanel.BOTTOM);
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i][j + 1], Tile.BOTTOM);
                 }
                 if (i - 1 >= 0) {
-                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i - 1][j], TilePanel.LEFT);
+                    mMapPanels[i][j].setNeighborAtPos(mMapPanels[i - 1][j], Tile.LEFT);
                 }
             }
         }

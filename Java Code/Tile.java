@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Image;
 
 import javax.imageio.ImageIO;
 
@@ -15,6 +18,10 @@ public class Tile extends AQ_Object {
     private int mSelectedImage;
     private BufferedImage mCurrentImage;
     private ArrayList<AQ_Object> mNormalObjects;
+    private int Size = 133;
+
+    private int startX;
+    private int startY;
 
     public static final int NORMAL_IMAGE = 0;
     public static final int GRAY_IMAGE = 1;
@@ -23,6 +30,11 @@ public class Tile extends AQ_Object {
     public static final int VIOLET_IMAGE = 4;
     public static final String[] TILE_TYPES = { "Normal", "Gray", "Start", "Green", "Violet" };
     public static final String FILE_TYPE_JPG = ".jpg";
+
+    public static final int TOP = 0;
+    public static final int RIGHT = 1;
+    public static final int BOTTOM = 2;
+    public static final int LEFT = 3;
 
     public Tile(String pImagePath, String pName, int pGameBox) {
         super(pImagePath + "\\img" + pName + "\\img" + pName + TILE_TYPES[GRAY_IMAGE] + FILE_TYPE_JPG, pName, 1,
@@ -50,6 +62,15 @@ public class Tile extends AQ_Object {
             System.exit(-1);
         }
         return images;
+    }
+
+    public static BufferedImage resize(BufferedImage img, int width, int height) {
+        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = resized.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+        return resized;
     }
 
     /**
@@ -157,7 +178,7 @@ public class Tile extends AQ_Object {
 
     public void paint(Graphics g) {
         if (mCurrentImage != null) {
-            mCurrentImage = mCurrentImage(mSelectedImage, this.getHeight(), this.getWidth());
+            mCurrentImage = resize(mCurrentImage, Size, Size);
             g.drawImage(mCurrentImage, 0, 0, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
         }
     }

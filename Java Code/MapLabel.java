@@ -27,7 +27,7 @@ public class MapLabel extends JLabel {
         this.addMouseMotionListener(mListener);
 
         BufferedImage img = mMap.getImage();
-        img = TilePanel.resize(img, 75, 75);
+        img = Tile.resize(img, 75, 75);
         mImage = new ImageIcon(img);
         this.setIcon(mImage);
     }

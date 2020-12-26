@@ -35,7 +35,7 @@ public class ObjectLabel extends JLabel {
             this.setVerticalAlignment(JLabel.CENTER); // set vertical possition of icon and text within Label
             this.setHorizontalAlignment(JLabel.CENTER); // set horizontal possition of icon and text within Label
         }
-        img = TilePanel.resize(img, mObject.getPrefIconWidth(), mObject.getPrefIconHeight());
+        img = Tile.resize(img, mObject.getPrefIconWidth(), mObject.getPrefIconHeight());
         this.setIcon(new ImageIcon(img));
     }
 
