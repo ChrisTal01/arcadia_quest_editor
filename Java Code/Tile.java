@@ -83,31 +83,36 @@ public class Tile extends AQ_Object {
 
         mNormalTile = new JMenuItem("Use normal tile");
         mNormalTile.addActionListener(e -> {
-            setCurrentImage(getImageAtPos(Tile.NORMAL_IMAGE));
+            setSelectedPos(Tile.NORMAL_IMAGE);
+            setCurrentImage(mSelectedImage);
             mMapPanel.repaint();
         });
 
         mGrayTile = new JMenuItem("Use gray tile");
         mGrayTile.addActionListener(e -> {
-            setCurrentImage(getImageAtPos(Tile.GRAY_IMAGE));
+            setSelectedPos(Tile.GRAY_IMAGE);
+            setCurrentImage(mSelectedImage);
             mMapPanel.repaint();
         });
 
         mStartTile = new JMenuItem("Use start tile");
         mStartTile.addActionListener(e -> {
-            setCurrentImage(getImageAtPos(Tile.START_IMAGE));
+            setSelectedPos(Tile.START_IMAGE);
+            setCurrentImage(mSelectedImage);
             mMapPanel.repaint();
         });
 
         mGreenTile = new JMenuItem("Use green tile");
         mGreenTile.addActionListener(e -> {
-            setCurrentImage(getImageAtPos(Tile.GREEN_IMAGE));
+            setSelectedPos(Tile.GREEN_IMAGE);
+            setCurrentImage(mSelectedImage);
             mMapPanel.repaint();
         });
 
         mVioletTile = new JMenuItem("Use violet tile");
         mVioletTile.addActionListener(e -> {
-            setCurrentImage(getImageAtPos(Tile.VIOLET_IMAGE));
+            setSelectedPos(Tile.VIOLET_IMAGE);
+            setCurrentImage(mSelectedImage);
             mMapPanel.repaint();
         });
 
@@ -178,30 +183,33 @@ public class Tile extends AQ_Object {
             graphic.drawImage(pImg, null, 0, 0);
             graphic.dispose();
             return rotated;
-
         }
         return null;
     }
 
     public void rotateRight() {
+        System.out.println("Rotate right");
         for (int i = 0; i < mTileImages.length; i++) {
-            BufferedImage rotatetd = rotate(mTileImages[i], 90);
-            mTileImages[i] = rotatetd;
+            BufferedImage rotated = rotate(mTileImages[i], 90);
+            mTileImages[i] = rotated;
         }
+        setCurrentImage(mSelectedImage);
     }
 
     public void rotateLeft() {
         for (int i = 0; i < mTileImages.length; i++) {
-            BufferedImage rotatetd = rotate(mTileImages[i], -90);
-            mTileImages[i] = rotatetd;
+            BufferedImage rotated = rotate(mTileImages[i], -90);
+            mTileImages[i] = rotated;
         }
+        setCurrentImage(mSelectedImage);
     }
 
     public void rotate180() {
         for (int i = 0; i < mTileImages.length; i++) {
-            BufferedImage rotatetd = rotate(mTileImages[i], 180);
-            mTileImages[i] = rotatetd;
+            BufferedImage rotated = rotate(mTileImages[i], 180);
+            mTileImages[i] = rotated;
         }
+        setCurrentImage(mSelectedImage);
     }
 
     /**
@@ -256,6 +264,14 @@ public class Tile extends AQ_Object {
         return mStartY;
     }
 
+    public int getSize() {
+        return mSize;
+    }
+
+    public Tile[] getNeighbors() {
+        return mNeighbors;
+    }
+
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
      * Setter
@@ -287,6 +303,14 @@ public class Tile extends AQ_Object {
 
     public void setImageAtPos(BufferedImage pImg, int pPos) {
         mTileImages[pPos] = pImg;
+    }
+
+    public void setCurrentImage(BufferedImage pImg) {
+        mCurrentImage = pImg;
+    }
+
+    public void setCurrentImage(int pPos) {
+        mCurrentImage = mTileImages[pPos];
     }
 
     public void setAllImages(BufferedImage[] pImg) {
@@ -323,20 +347,20 @@ public class Tile extends AQ_Object {
         }
     }
 
-    public void setCurrentImage(BufferedImage pImg) {
-        mCurrentImage = pImg;
-    }
-
     public void setSize(int pSize) {
         mSize = pSize;
     }
 
-    public int getSize() {
-        return mSize;
-    }
-
     public void setMapPanel(MapPanel pMapPanel) {
         mMapPanel = pMapPanel;
+    }
+
+    public void setNeighborAtPos(Tile pTile, int pPos) {
+        mNeighbors[pPos] = pTile;
+    }
+
+    public void setNeighbors(Tile[] pNeighbors) {
+        mNeighbors = pNeighbors;
     }
 
     public void copy(Tile pTile) {
@@ -350,5 +374,7 @@ public class Tile extends AQ_Object {
         this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
         this.setCurrentImage(deepCopy(pTile.getCurrentImage()));
         this.setSize(pTile.getSize());
+        this.setNeighbors(pTile.getNeighbors());
+        this.setStartPos(pTile.getStartPosX(), pTile.getStartPosY());
     }
 }

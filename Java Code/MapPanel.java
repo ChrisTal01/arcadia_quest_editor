@@ -45,11 +45,6 @@ public class MapPanel extends JPanel {
 
     private void initComponents() {
 
-        // Tiles
-
-        // set Neighbors
-        initNeighbors();
-
         // PopUpMenu
 
         mPopupMenu = new JPopupMenu();
@@ -99,11 +94,17 @@ public class MapPanel extends JPanel {
 
     }
 
-    public void removeTilePanels() {
+    public void removeTiles() {
         this.removeAll();
         this.revalidate();
         this.repaint();
     }
+
+    /**
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     * Rotate methods
+     * ////////////////////////////////////////////////////////////////////////////////////////
+     */
 
     public void rotateRight() {
         /**
@@ -111,14 +112,112 @@ public class MapPanel extends JPanel {
          * 
          * pos0 => pos2 => pos8 => pos6 => pos0 || pos1 => pos5 => pos7 => pos3 => pos1
          */
-    }
+        Tile[] newTiles = new Tile[9];
+        if (mTiles[0] != null) {
+            int[][] positions = new int[9][2];
+            for (int i = 0; i < mTiles.length; i++) {
+                positions[i][0] = mTiles[i].getStartPosX();
+                positions[i][1] = mTiles[i].getStartPosY();
+            }
+            // corner
+            newTiles[0] = mTiles[6];
+            newTiles[6] = mTiles[8];
+            newTiles[8] = mTiles[2];
+            newTiles[2] = mTiles[0];
+            // Center
+            newTiles[4] = mTiles[4];
+            // middle
+            newTiles[1] = mTiles[3];
+            newTiles[3] = mTiles[7];
+            newTiles[7] = mTiles[5];
+            newTiles[5] = mTiles[1];
 
-    public void rotate180() {
+            for (int i = 0; i < positions.length; i++) {
+                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
+            }
+            for (int i = 0; i < mTiles.length; i++) {
+                mTiles[i] = newTiles[i];
+                mTiles[i].rotateRight();
+            }
+        }
+        revalidate();
+        repaint();
 
     }
 
     public void rotateLeft() {
+        /**
+         * 
+         * pos0 <= pos2 <= pos8 <= pos6 <= pos0 || pos1 <= pos5 <= pos7 <= pos3 <= pos1
+         */
 
+        Tile[] newTiles = new Tile[9];
+        if (mTiles[0] != null) {
+            int[][] positions = new int[9][2];
+            for (int i = 0; i < mTiles.length; i++) {
+                positions[i][0] = mTiles[i].getStartPosX();
+                positions[i][1] = mTiles[i].getStartPosY();
+            }
+
+            // corner
+            newTiles[0] = mTiles[2];
+            newTiles[2] = mTiles[8];
+            newTiles[8] = mTiles[6];
+            newTiles[6] = mTiles[0];
+            // Center
+            newTiles[4] = mTiles[4];
+            // middle
+            newTiles[3] = mTiles[1];
+            newTiles[7] = mTiles[3];
+            newTiles[5] = mTiles[7];
+            newTiles[1] = mTiles[5];
+
+            for (int i = 0; i < positions.length; i++) {
+                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
+            }
+
+            for (int i = 0; i < mTiles.length; i++) {
+                mTiles[i] = newTiles[i];
+                mTiles[i].rotateLeft();
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
+    public void rotate180() {
+        Tile[] newTiles = new Tile[9];
+        if (mTiles[0] != null) {
+            int[][] positions = new int[9][2];
+            for (int i = 0; i < mTiles.length; i++) {
+                positions[i][0] = mTiles[i].getStartPosX();
+                positions[i][1] = mTiles[i].getStartPosY();
+            }
+
+            // corner
+            newTiles[0] = mTiles[8];
+            newTiles[8] = mTiles[0];
+            newTiles[2] = mTiles[6];
+            newTiles[6] = mTiles[2];
+            // Center
+            newTiles[4] = mTiles[4];
+            // middle
+            newTiles[1] = mTiles[7];
+            newTiles[7] = mTiles[1];
+            newTiles[3] = mTiles[5];
+            newTiles[5] = mTiles[3];
+
+            for (int i = 0; i < positions.length; i++) {
+                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
+            }
+
+            for (int i = 0; i < mTiles.length; i++) {
+                mTiles[i] = newTiles[i];
+                mTiles[i].rotate180();
+            }
+        }
+        revalidate();
+        repaint();
     }
 
     /**
@@ -155,6 +254,7 @@ public class MapPanel extends JPanel {
         // init Tile start locations
         int x = 0;
         int y = 0;
+        System.out.println("int start locations");
         for (int i = 0; i < mTiles.length; i++) {
             mTiles[i].setStartPos(x, y);
             mTiles[i].setSize(width);
@@ -165,7 +265,9 @@ public class MapPanel extends JPanel {
             } else {
                 x += width;
             }
+            System.out.println("x = " + mTiles[i].getStartPosX() + "; y = " + mTiles[i].getStartPosY());
         }
+        initNeighbors();
         revalidate();
         repaint();
     }
@@ -195,6 +297,45 @@ public class MapPanel extends JPanel {
     }
 
     private void initNeighbors() {
+        mTiles[0].setNeighborAtPos(mTiles[1], Tile.RIGHT);
+        mTiles[0].setNeighborAtPos(mTiles[3], Tile.BOTTOM);
+        // 1
+        mTiles[1].setNeighborAtPos(mTiles[2], Tile.RIGHT);
+        mTiles[1].setNeighborAtPos(mTiles[4], Tile.BOTTOM);
+        mTiles[1].setNeighborAtPos(mTiles[0], Tile.LEFT);
+
+        // 2
+        mTiles[2].setNeighborAtPos(mTiles[5], Tile.BOTTOM);
+        mTiles[2].setNeighborAtPos(mTiles[1], Tile.LEFT);
+
+        // 3
+        mTiles[3].setNeighborAtPos(mTiles[0], Tile.TOP);
+        mTiles[3].setNeighborAtPos(mTiles[4], Tile.RIGHT);
+        mTiles[3].setNeighborAtPos(mTiles[6], Tile.BOTTOM);
+
+        // 4
+        mTiles[4].setNeighborAtPos(mTiles[1], Tile.TOP);
+        mTiles[4].setNeighborAtPos(mTiles[5], Tile.RIGHT);
+        mTiles[4].setNeighborAtPos(mTiles[7], Tile.BOTTOM);
+        mTiles[4].setNeighborAtPos(mTiles[3], Tile.LEFT);
+
+        // 5
+        mTiles[5].setNeighborAtPos(mTiles[2], Tile.TOP);
+        mTiles[5].setNeighborAtPos(mTiles[8], Tile.BOTTOM);
+        mTiles[5].setNeighborAtPos(mTiles[4], Tile.LEFT);
+
+        // 6
+        mTiles[6].setNeighborAtPos(mTiles[3], Tile.TOP);
+        mTiles[6].setNeighborAtPos(mTiles[7], Tile.RIGHT);
+
+        // 7
+        mTiles[7].setNeighborAtPos(mTiles[4], Tile.TOP);
+        mTiles[7].setNeighborAtPos(mTiles[8], Tile.RIGHT);
+        mTiles[7].setNeighborAtPos(mTiles[6], Tile.LEFT);
+
+        // 8
+        mTiles[8].setNeighborAtPos(mTiles[5], Tile.TOP);
+        mTiles[8].setNeighborAtPos(mTiles[7], Tile.LEFT);
 
     }
 
