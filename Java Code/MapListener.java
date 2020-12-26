@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import java.awt.MouseInfo;
-import java.awt.PointerInfo;
 
 public class MapListener implements MouseMotionListener, MouseListener, KeyListener {
 
@@ -116,7 +115,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     }
 
     @Override
-    public void mouseDragged(MouseEvent me) {
+    public void mouseDragged(MouseEvent e) {
 
     }
 
@@ -135,6 +134,20 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             mCurrentMapPanel.setMap(mCurrentMap);
             mCurrentMapPanel.setNeighbors();
             mMapPanels.add(mCurrentMapPanel);
+        }
+
+        if (mCurrentMapPanel != null) {
+            System.out.println("released");
+            System.out.println(
+                    MouseInfo.getPointerInfo().getLocation().getX() - mCurrentMapPanel.getLocationOnScreen().getX());
+            System.out.println(
+                    MouseInfo.getPointerInfo().getLocation().getY() - mCurrentMapPanel.getLocationOnScreen().getY());
+
+            if (mCurrentAqObject != null) {
+                mCurrentTile.addAqObject(mCurrentAqObject);
+                mCurrentMapPanel.revalidate();
+                mCurrentMapPanel.repaint();
+            }
         }
         mCurrentMap = null;
         mCurrentAqObject = null;
@@ -175,7 +188,10 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     public void keyPressed(KeyEvent e) {
         // Backspace or delete (numpad) or delete
         if (e.getKeyCode() == 8 || e.getKeyCode() == 110 || e.getKeyCode() == 127) {
-            // TODO
+            // remove selected Object from Tile Panel
+            if (mSelectedAqObject != null && mSelectedTile != null) {
+                mSelectedAqObject = null;
+            }
         }
         if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
             mShiftPressed = true;

@@ -28,6 +28,7 @@ public class Tile extends AQ_Object {
     private Door[] mDoors = { null, null, null, null };
     private Tile[] mNeighbors = { null, null, null, null };
     private MapPanel mMapPanel;
+    private AQ_Object mSelectedObject;
 
     private int mSize = 133;
     private int mStartX;
@@ -131,11 +132,89 @@ public class Tile extends AQ_Object {
      */
 
     public void paint(Graphics g) {
-        // draw background
+        // only draw if background image is not null
         if (mCurrentImage != null) {
+            // draw background
             mCurrentImage = resize(mCurrentImage, mSize, mSize);
             g.drawImage(mCurrentImage, mStartX, mStartY, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
+
+            // draw Doors
+
+            // draw Stone cards
+
+            // draw Monsters
+            if (mNormalObjects != null && mNormalObjects.size() > 0) {
+                // draw Object in the center of Tile
+                int amount = mNormalObjects.size();
+                AQ_Object ob;
+                // dummy Image
+                BufferedImage img = new BufferedImage(1, 1, 1);
+                int xStart;
+                int yStart;
+                int xEnd;
+                int yEnd;
+
+                if (amount == 1) {
+                    // Center of Tile
+                    xStart = mSize / 2 - img.getWidth() / 2;
+                    yStart = mSize / 2 - img.getHeight() / 2;
+                    drawObjectAtPos(g, mNormalObjects.get(0), xStart, yStart);
+
+                } else {
+                    ////
+                    // Top-Right
+                    ////
+
+                    xStart = mSize - img.getWidth() - 5;
+                    yStart = 5;
+                    drawObjectAtPos(g, mNormalObjects.get(0), xStart, yStart);
+
+                    ////
+                    // Bottom-Left
+                    ////
+
+                    xStart = 5;
+                    yStart = mSize - img.getHeight() - 5;
+                    drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+
+                    if (amount >= 3) {
+                        ////
+                        // Bottom-Right
+                        ////
+
+                        xStart = mSize - img.getWidth() - 5;
+                        yStart = mSize - img.getHeight() - 5;
+                        drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+                    }
+                    if (amount == 4) {
+                        ////
+                        // Top-Left
+                        ////
+
+                        xStart = 5;
+                        yStart = 5;
+                        drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+                    }
+
+                }
+            }
         }
+    }
+
+    public void drawObjectAtPos(Graphics g, AQ_Object ob, int pStartX, int pStartY) {
+        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+        BufferedImage img = ob.getImage();
+
+        int xEnd = img.getWidth();
+        int yEnd = img.getHeight();
+
+        g.drawImage(img, pStartX, pStartY, xEnd, yEnd, null);
+        // Draw Border
+        if (mSelectedObject != null && ob == mSelectedObject) {
+            g.setColor(Color.BLACK);
+            g.drawRect(pStartX - 1, pStartY - 1, xEnd + 1, yEnd + 1);
+        }
+
     }
 
     /**
@@ -238,6 +317,82 @@ public class Tile extends AQ_Object {
         return mSelectedImage;
     }
 
+    public AQ_Object getAQ_ObjectAtLocation(int pPosX, int pPosY) {
+        int halfPanelSize = mSize / 2;
+        AQ_Object o;
+        BufferedImage img;
+        int startW;
+        int startH;
+        if (mNormalObjects == null) {
+            return null;
+        }
+        if (mNormalObjects.size() == 0) {
+            mSelectedObject = null;
+            return null;
+        }
+        if (mNormalObjects.size() == 1) {
+            // picture in the center of the panel
+            o = mNormalObjects.get(0);
+            img = o.getImage();
+            startW = halfPanelSize - img.getWidth() / 2;
+            startH = halfPanelSize - img.getHeight() / 2;
+            if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
+                    && pPosY <= startH + img.getHeight()) {
+                mSelectedObject = o;
+                return o;
+            }
+            mSelectedObject = null;
+            return null;
+        } else {
+            // picture in the top right-hand corner
+            o = mNormalObjects.get(0);
+            img = o.getImage();
+            startW = halfPanelSize + 5;
+            startH = 7;
+            if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
+                    && pPosY <= startH + img.getHeight()) {
+                mSelectedObject = o;
+                return o;
+            }
+            // picture in the bottom left-hand corner
+            o = mNormalObjects.get(1);
+            img = o.getImage();
+            startW = 7;
+            startH = halfPanelSize + 5;
+            if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
+                    && pPosY <= startH + img.getHeight()) {
+                mSelectedObject = o;
+                return o;
+            }
+            if (mNormalObjects.size() >= 3) {
+                // picture in the bottom right-hand Corner
+                o = mNormalObjects.get(2);
+                img = o.getImage();
+                startW = halfPanelSize + 5;
+                startH = halfPanelSize + 5;
+                if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
+                        && pPosY <= startH + img.getHeight()) {
+                    mSelectedObject = o;
+                    return o;
+                }
+                // picture in the top left-hand corner
+                if (mNormalObjects.size() == 4) {
+                    o = mNormalObjects.get(3);
+                    img = o.getImage();
+                    startW = 5;
+                    startH = 5;
+                    if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
+                            && pPosY <= startH + img.getHeight()) {
+                        mSelectedObject = o;
+                        return o;
+                    }
+                }
+            }
+            mSelectedObject = null;
+            return null;
+        }
+    }
+
     private int getCurrentSize() {
         int currentSize = 0;
         for (AQ_Object o : mNormalObjects) {
@@ -325,6 +480,10 @@ public class Tile extends AQ_Object {
         mPopupMenu.setVisible(pShow);
     }
 
+    public void deSelectObject() {
+        mSelectedObject = null;
+    }
+
     public void addAqObject(AQ_Object pObject) {
         if (mNormalObjects.size() < 4) {
             if (pObject instanceof Monster) {
@@ -334,6 +493,9 @@ public class Tile extends AQ_Object {
             } else {
                 mNormalObjects.add(pObject);
             }
+            mMapPanel.revalidate();
+            mMapPanel.repaint();
+
         }
     }
 
@@ -344,6 +506,8 @@ public class Tile extends AQ_Object {
     public void removeAqObject(AQ_Object pObject) {
         if (mNormalObjects.size() >= 1) {
             mNormalObjects.remove(pObject);
+            mMapPanel.revalidate();
+            mMapPanel.repaint();
         }
     }
 
