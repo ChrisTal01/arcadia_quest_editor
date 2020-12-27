@@ -131,7 +131,7 @@ public class Tile extends AQ_Object {
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
-    public void paint(Graphics g) {
+    public void paintBackground(Graphics g) {
         // only draw if background image is not null
         if (mCurrentImage != null) {
             // draw background
@@ -141,70 +141,87 @@ public class Tile extends AQ_Object {
             // draw Doors
 
             // draw Stone cards
+        }
+    }
 
+    public void paintMonsters(Graphics g) {
+        if (mCurrentImage != null) {
             // draw Monsters
             if (mNormalObjects != null && mNormalObjects.size() > 0) {
                 // draw Object in the center of Tile
                 int amount = mNormalObjects.size();
-                AQ_Object ob;
                 // dummy Image
-                BufferedImage img = new BufferedImage(1, 1, 1);
+                BufferedImage img;
+                AQ_Object ob;
                 int xStart;
                 int yStart;
-                int xEnd;
-                int yEnd;
 
                 if (amount == 1) {
                     // Center of Tile
-                    xStart = mSize / 2 - img.getWidth() / 2;
-                    yStart = mSize / 2 - img.getHeight() / 2;
-                    drawObjectAtPos(g, mNormalObjects.get(0), xStart, yStart);
+                    ob = mNormalObjects.get(0);
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                    img = ob.getImage();
+
+                    xStart = mStartX + (mSize / 2 - img.getWidth() / 2);
+                    yStart = mStartY + (mSize / 2 - img.getHeight() / 2);
+                    drawObjectAtPos(g, ob, img, xStart, yStart);
 
                 } else {
                     ////
                     // Top-Right
                     ////
+                    ob = mNormalObjects.get(0);
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                    img = ob.getImage();
 
-                    xStart = mSize - img.getWidth() - 5;
-                    yStart = 5;
-                    drawObjectAtPos(g, mNormalObjects.get(0), xStart, yStart);
+                    xStart = mStartX + (mSize - img.getWidth() - 5);
+                    yStart = mStartY + 5;
+                    drawObjectAtPos(g, ob, img, xStart, yStart);
 
                     ////
                     // Bottom-Left
                     ////
 
-                    xStart = 5;
-                    yStart = mSize - img.getHeight() - 5;
-                    drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+                    ob = mNormalObjects.get(1);
+                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                    img = ob.getImage();
+
+                    xStart = mStartX + 5;
+                    yStart = mStartY + (mSize - img.getHeight() - 5);
+                    drawObjectAtPos(g, ob, img, xStart, yStart);
 
                     if (amount >= 3) {
                         ////
                         // Bottom-Right
                         ////
+                        ob = mNormalObjects.get(2);
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                        img = ob.getImage();
 
-                        xStart = mSize - img.getWidth() - 5;
-                        yStart = mSize - img.getHeight() - 5;
-                        drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+                        xStart = mStartX + (mSize - img.getWidth() - 5);
+                        yStart = mStartY + (mSize - img.getHeight() - 5);
+                        drawObjectAtPos(g, ob, img, xStart, yStart);
                     }
                     if (amount == 4) {
                         ////
                         // Top-Left
                         ////
+                        ob = mNormalObjects.get(3);
+                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                        img = ob.getImage();
 
-                        xStart = 5;
-                        yStart = 5;
-                        drawObjectAtPos(g, mNormalObjects.get(1), xStart, yStart);
+                        xStart = mStartX + 5;
+                        yStart = mStartY + 5;
+                        drawObjectAtPos(g, ob, img, xStart, yStart);
                     }
 
                 }
             }
+
         }
     }
 
-    public void drawObjectAtPos(Graphics g, AQ_Object ob, int pStartX, int pStartY) {
-        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-        BufferedImage img = ob.getImage();
-
+    public void drawObjectAtPos(Graphics g, AQ_Object ob, BufferedImage img, int pStartX, int pStartY) {
         int xEnd = img.getWidth();
         int yEnd = img.getHeight();
 
@@ -267,7 +284,6 @@ public class Tile extends AQ_Object {
     }
 
     public void rotateRight() {
-        System.out.println("Rotate right");
         for (int i = 0; i < mTileImages.length; i++) {
             BufferedImage rotated = rotate(mTileImages[i], 90);
             mTileImages[i] = rotated;
@@ -318,6 +334,7 @@ public class Tile extends AQ_Object {
     }
 
     public AQ_Object getAQ_ObjectAtLocation(int pPosX, int pPosY) {
+        System.out.println("ger AQ Object");
         int halfPanelSize = mSize / 2;
         AQ_Object o;
         BufferedImage img;

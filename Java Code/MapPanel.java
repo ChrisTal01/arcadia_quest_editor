@@ -86,12 +86,16 @@ public class MapPanel extends JPanel {
         super.paintComponent(g);
         // draw Background
         if (mTiles[0] != null) {
-            System.out.println("Paint Map Panel");
             for (Tile t : mTiles) {
-                t.paint(g);
+                t.paintBackground(g);
             }
         }
 
+        if (mTiles[0] != null) {
+            for (Tile t : mTiles) {
+                t.paintMonsters(g);
+            }
+        }
     }
 
     public void removeTiles() {
@@ -141,6 +145,7 @@ public class MapPanel extends JPanel {
             }
         }
         revalidate();
+
         repaint();
 
     }
@@ -254,7 +259,6 @@ public class MapPanel extends JPanel {
         // init Tile start locations
         int x = 0;
         int y = 0;
-        System.out.println("int start locations");
         for (int i = 0; i < mTiles.length; i++) {
             mTiles[i].setStartPos(x, y);
             mTiles[i].setSize(width);
@@ -265,7 +269,6 @@ public class MapPanel extends JPanel {
             } else {
                 x += width;
             }
-            System.out.println("x = " + mTiles[i].getStartPosX() + "; y = " + mTiles[i].getStartPosY());
         }
         initNeighbors();
         revalidate();

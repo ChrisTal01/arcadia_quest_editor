@@ -89,7 +89,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on MapPanel
         if (e.getSource() instanceof MapPanel) {
-            System.out.println("Mouse Pressed MapPanel");
+            // System.out.println("Mouse Pressed MapPanel");
         }
         // Press on Map Panel with right Click and shift
         if (e.getButton() == MouseEvent.BUTTON3 && mShiftPressed && !mMenuOpen) {
@@ -111,6 +111,19 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
                 mTileMenu = mCurrentTile;
                 mMenuOpen = true;
             }
+        }
+
+        // Press on Object on Tile
+        if (e.getSource() instanceof MapPanel) {
+            mCurrentMapPanel = (MapPanel) e.getSource();
+            mCurrentTile = mCurrentMapPanel.getTileAtLocation(e.getX(), e.getY());
+            if (mSelectedTile != null && mSelectedTile != mCurrentTile) {
+                mSelectedTile.deSelectObject();
+            }
+            mSelectedTile = mCurrentMapPanel.getTileAtLocation(e.getX(), e.getY());
+            mSelectedAqObject = mSelectedTile.getAQ_ObjectAtLocation(e.getX(), e.getY());
+            mCurrentMapPanel.revalidate();
+            mCurrentMapPanel.repaint();
         }
     }
 
@@ -137,18 +150,19 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
 
         if (mCurrentMapPanel != null) {
-            System.out.println("released");
-            System.out.println(
-                    MouseInfo.getPointerInfo().getLocation().getX() - mCurrentMapPanel.getLocationOnScreen().getX());
-            System.out.println(
-                    MouseInfo.getPointerInfo().getLocation().getY() - mCurrentMapPanel.getLocationOnScreen().getY());
+            int x = (int) (MouseInfo.getPointerInfo().getLocation().getX()
+                    - mCurrentMapPanel.getLocationOnScreen().getX());
+            int y = (int) (MouseInfo.getPointerInfo().getLocation().getY()
+                    - mCurrentMapPanel.getLocationOnScreen().getY());
+            mCurrentTile = mCurrentMapPanel.getTileAtLocation(x, y);
 
-            if (mCurrentAqObject != null) {
+            if (mCurrentAqObject != null && mCurrentTile != null) {
                 mCurrentTile.addAqObject(mCurrentAqObject);
                 mCurrentMapPanel.revalidate();
                 mCurrentMapPanel.repaint();
             }
         }
+
         mCurrentMap = null;
         mCurrentAqObject = null;
         mCurrentDoor = null;
