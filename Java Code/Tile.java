@@ -30,6 +30,8 @@ public class Tile extends AQ_Object {
     private MapPanel mMapPanel;
     private AQ_Object mSelectedObject;
 
+    private boolean mShowDoorOutline = false;
+
     private int mSize = 133;
     private int mStartX;
     private int mStartY;
@@ -127,7 +129,7 @@ public class Tile extends AQ_Object {
 
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
-     * Paint
+     * Paint Methods
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
@@ -138,10 +140,59 @@ public class Tile extends AQ_Object {
             mCurrentImage = resize(mCurrentImage, mSize, mSize);
             g.drawImage(mCurrentImage, mStartX, mStartY, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
 
-            // draw Doors
+            // draw door outline
+            if (mShowDoorOutline) {
 
-            // draw Stone cards
+                int xStart;
+                int yStart;
+                int xEnd;
+                int yEnd;
+                // draw Door outline
+                // Top
+                if (mNeighbors[0] != null && mDoors[0] == null) {
+                    xStart = mStartX + 5;
+                    yStart = mStartY - 10;
+                    xEnd = mSize - 2 * xStart;
+                    yEnd = mDoors[0].getPrefImageHeight();
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Right
+                if (mNeighbors[1] != null && mDoors[1] == null) {
+                    xStart = mStartX + (mSize - 10);
+                    yStart = mStartY + 15;
+                    xEnd = 20;
+                    yEnd = mSize - 2 * yStart;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Bottom
+                if (mNeighbors[2] != null && mDoors[2] == null) {
+                    xStart = mStartX + 5;
+                    yStart = mStartY + (mSize - mDoors[2].getPrefImageHeight() / 2);
+                    xEnd = mSize - 2 * xStart;
+                    yEnd = mDoors[2].getPrefImageHeight();
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+
+                // Left
+                if (mNeighbors[3] != null && mDoors[3] == null) {
+                    xStart = mStartX - 10;
+                    yStart = mStartY + 15;
+                    xEnd = 20;
+                    yEnd = mSize - 2 * yStart;
+                    g.setColor(Color.BLUE);
+                    g.drawRect(xStart, yStart, xEnd, yEnd);
+                }
+            }
         }
+    }
+
+    public void paintDoors(Graphics g) {
+        System.out.println("Draw Doors");
     }
 
     public void paintMonsters(Graphics g) {
@@ -334,8 +385,6 @@ public class Tile extends AQ_Object {
     }
 
     public AQ_Object getAQ_ObjectAtLocation(int pPosX, int pPosY) {
-        System.out.println("ger AQ Object");
-        int halfPanelSize = mSize / 2;
         AQ_Object o;
         BufferedImage img;
         int startW;
@@ -351,8 +400,10 @@ public class Tile extends AQ_Object {
             // picture in the center of the panel
             o = mNormalObjects.get(0);
             img = o.getImage();
-            startW = halfPanelSize - img.getWidth() / 2;
-            startH = halfPanelSize - img.getHeight() / 2;
+            startW = mStartX + (mSize / 2 - img.getWidth() / 2);
+            startH = mStartY + (mSize / 2 - img.getHeight() / 2);
+            System.out.println(startW);
+            System.out.println(startH);
             if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                     && pPosY <= startH + img.getHeight()) {
                 mSelectedObject = o;
@@ -364,8 +415,8 @@ public class Tile extends AQ_Object {
             // picture in the top right-hand corner
             o = mNormalObjects.get(0);
             img = o.getImage();
-            startW = halfPanelSize + 5;
-            startH = 7;
+            startW = mStartX + (mSize / 2 + 5);
+            startH = mStartY + 7;
             if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                     && pPosY <= startH + img.getHeight()) {
                 mSelectedObject = o;
@@ -374,8 +425,8 @@ public class Tile extends AQ_Object {
             // picture in the bottom left-hand corner
             o = mNormalObjects.get(1);
             img = o.getImage();
-            startW = 7;
-            startH = halfPanelSize + 5;
+            startW = mStartX + 7;
+            startH = mStartY + (mSize / 2 + 5);
             if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                     && pPosY <= startH + img.getHeight()) {
                 mSelectedObject = o;
@@ -385,8 +436,8 @@ public class Tile extends AQ_Object {
                 // picture in the bottom right-hand Corner
                 o = mNormalObjects.get(2);
                 img = o.getImage();
-                startW = halfPanelSize + 5;
-                startH = halfPanelSize + 5;
+                startW = mStartX + (mSize / 2 + 5);
+                startH = mStartY + (mSize / 2 + 5);
                 if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                         && pPosY <= startH + img.getHeight()) {
                     mSelectedObject = o;
@@ -396,8 +447,8 @@ public class Tile extends AQ_Object {
                 if (mNormalObjects.size() == 4) {
                     o = mNormalObjects.get(3);
                     img = o.getImage();
-                    startW = 5;
-                    startH = 5;
+                    startW = mStartX + 5;
+                    startH = mStartY + 5;
                     if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                             && pPosY <= startH + img.getHeight()) {
                         mSelectedObject = o;
@@ -428,6 +479,12 @@ public class Tile extends AQ_Object {
         return mNormalObjects.get(pPos);
     }
 
+    public Door getDoorAtLocation(int pPosX, int pPosY) {
+        Door d;
+        // TODO
+        return null;
+    }
+
     public int getStartPosX() {
         return mStartX;
     }
@@ -449,6 +506,76 @@ public class Tile extends AQ_Object {
      * Setter
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
+
+    public void setDoorAtLocation(Door pDoor, int pPosX, int pPosY) {
+        int DoorEdgeSpace = 3;
+        int xStart, yStart, xEnd, yEnd;
+
+        // Top
+        xStart = 5;
+        yStart = 0;
+        xEnd = mSize - 2 * xStart;
+        yEnd = pDoor.getPrefImageHeight();
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Top");
+            mDoors[0] = pDoor;
+            if (mNeighbors[TOP] != null) {
+                mNeighbors[TOP].setDoorAtPos(pDoor, BOTTOM);
+            }
+        }
+
+        // Right
+        xStart = mSize - pDoor.getPrefImageHeight() / 2;
+        yStart = DoorEdgeSpace;
+        xEnd = mSize;
+        yEnd = mSize - DoorEdgeSpace;
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Right");
+            mDoors[1] = pDoor;
+            if (mNeighbors[RIGHT] != null) {
+                System.out.println("Test");
+                mNeighbors[RIGHT].setDoorAtPos(pDoor, LEFT);
+            }
+        }
+
+        // Bottom
+        xStart = 5;
+        yStart = mSize - pDoor.getPrefImageHeight() / 2;
+        xEnd = mSize - xStart;
+        yEnd = mSize;
+        System.out.println("xEnd = " + xEnd + "; yEnd = " + yEnd);
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Bottom");
+            mDoors[2] = pDoor;
+            if (mNeighbors[BOTTOM] != null) {
+                mNeighbors[BOTTOM].setDoorAtPos(pDoor, TOP);
+            }
+        }
+
+        // Left
+        xStart = 0;
+        yStart = DoorEdgeSpace;
+        xEnd = pDoor.getPrefImageHeight() / 2;
+        yEnd = mSize - DoorEdgeSpace;
+        if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
+            System.out.println("Left");
+            mDoors[3] = pDoor;
+            if (mNeighbors[LEFT] != null) {
+                System.out.println("Test");
+                mNeighbors[LEFT].setDoorAtPos(pDoor, RIGHT);
+            }
+        }
+        mMapPanel.revalidate();
+        mMapPanel.repaint();
+    }
+
+    public void setDoorAtPos(Door pDoor, int pPos) {
+        mDoors[pPos] = pDoor;
+    }
+
+    public void setShowDoorOutline(boolean pState) {
+        mShowDoorOutline = pState;
+    }
 
     public void setStartPos(int pPosX, int pPosY) {
         mStartX = pPosX;

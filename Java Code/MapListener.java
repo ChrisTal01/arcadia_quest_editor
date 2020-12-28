@@ -77,6 +77,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
+                for (MapPanel mp : mMapPanels) {
+                    mp.setShowDoorOutline(true);
+                }
             } else {
                 mCurrentAqObject = mCurrentObjectLabel.getAqObject();
             }
@@ -121,7 +124,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
                 mSelectedTile.deSelectObject();
             }
             mSelectedTile = mCurrentMapPanel.getTileAtLocation(e.getX(), e.getY());
-            mSelectedAqObject = mSelectedTile.getAQ_ObjectAtLocation(e.getX(), e.getY());
+            if (mSelectedTile != null) {
+                mSelectedAqObject = mSelectedTile.getAQ_ObjectAtLocation(e.getX(), e.getY());
+            }
             mCurrentMapPanel.revalidate();
             mCurrentMapPanel.repaint();
         }
@@ -204,6 +209,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         if (e.getKeyCode() == 8 || e.getKeyCode() == 110 || e.getKeyCode() == 127) {
             // remove selected Object from Tile Panel
             if (mSelectedAqObject != null && mSelectedTile != null) {
+                mSelectedTile.removeAqObject(mSelectedAqObject);
+                mSelectedTile.deSelectObject();
                 mSelectedAqObject = null;
             }
         }

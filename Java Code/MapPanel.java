@@ -86,12 +86,16 @@ public class MapPanel extends JPanel {
         super.paintComponent(g);
         // draw Background
         if (mTiles[0] != null) {
+            // draw Background and outlines
             for (Tile t : mTiles) {
                 t.paintBackground(g);
             }
-        }
+            // draw Doors
+            for (Tile t : mTiles) {
+                t.paintDoors(g);
+            }
 
-        if (mTiles[0] != null) {
+            // draw Objects
             for (Tile t : mTiles) {
                 t.paintMonsters(g);
             }
@@ -285,6 +289,14 @@ public class MapPanel extends JPanel {
 
     public void setNeighborAtPos(MapPanel pNeighbor, int pPos) {
         mNeighbors[pPos] = pNeighbor;
+    }
+
+    public void setShowDoorOutline(boolean pState) {
+        for (Tile t : mTiles) {
+            t.setShowDoorOutline(pState);
+        }
+        revalidate();
+        repaint();
     }
 
     public Tile getTileAtLocation(int pPosX, int pPosY) {
