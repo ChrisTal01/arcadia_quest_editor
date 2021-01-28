@@ -35,6 +35,22 @@ public class AQ_Object {
 
     public static final int OTHER = 12;
 
+    /**
+     * Most basic Object that is the base structure of every Arcadia Quest Object.
+     * 
+     * @param pImagePath       path to the image of the Object
+     * @param pName            name of the Object
+     * @param pAmount          amount of Objects that can be used
+     * @param pGameBox         number of the Gamebox the Object belongs to
+     * @param pPrefIconWidth   the prefed icon width the image should have when
+     *                         showed in the select menu
+     * @param pPrefIconHeight  the prefed icon height the image should have when
+     *                         showed in the select menu
+     * @param pPrefImageWidth  the prefed image height the image should have when
+     *                         showed on the Tile
+     * @param pPrefImageHeight the prefed image height the image should have when
+     *                         showed on the Tile
+     */
     public AQ_Object(String pImagePath, String pName, int pAmount, int pGameBox, int pPrefIconWidth,
             int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
         mImage = readImage(pImagePath);
@@ -46,7 +62,6 @@ public class AQ_Object {
         mPrefIconHeight = pPrefIconHeight;
         mPrefImageWidth = pPrefImageWidth;
         mPrefImageHeight = pPrefImageHeight;
-
     }
 
     public AQ_Object(AQ_Object pObject) {

@@ -24,6 +24,12 @@ public class Tile extends AQ_Object {
     private String mPath;
     private int mSelectedImage;
     private BufferedImage mCurrentImage;
+    /**
+     * Takes an Image and resizes it to the given width and height.
+     * 
+     * @param mNormalObjects list of Arcadia Quest Objects
+     * @see AQ_Object
+     */
     private ArrayList<AQ_Object> mNormalObjects;
     private Door[] mDoors = { null, null, null, null };
     private Tile[] mNeighbors = { null, null, null, null };
@@ -215,7 +221,7 @@ public class Tile extends AQ_Object {
 
                     xStart = mStartX + (mSize / 2 - img.getWidth() / 2);
                     yStart = mStartY + (mSize / 2 - img.getHeight() / 2);
-                    drawObjectAtPos(g, ob, img, xStart, yStart);
+                    drawObjectAtPos(g, ob, xStart, yStart);
 
                 } else {
                     ////
@@ -227,7 +233,7 @@ public class Tile extends AQ_Object {
 
                     xStart = mStartX + (mSize - img.getWidth() - 5);
                     yStart = mStartY + 5;
-                    drawObjectAtPos(g, ob, img, xStart, yStart);
+                    drawObjectAtPos(g, ob, xStart, yStart);
 
                     ////
                     // Bottom-Left
@@ -239,7 +245,7 @@ public class Tile extends AQ_Object {
 
                     xStart = mStartX + 5;
                     yStart = mStartY + (mSize - img.getHeight() - 5);
-                    drawObjectAtPos(g, ob, img, xStart, yStart);
+                    drawObjectAtPos(g, ob, xStart, yStart);
 
                     if (amount >= 3) {
                         ////
@@ -251,7 +257,7 @@ public class Tile extends AQ_Object {
 
                         xStart = mStartX + (mSize - img.getWidth() - 5);
                         yStart = mStartY + (mSize - img.getHeight() - 5);
-                        drawObjectAtPos(g, ob, img, xStart, yStart);
+                        drawObjectAtPos(g, ob, xStart, yStart);
                     }
                     if (amount == 4) {
                         ////
@@ -263,7 +269,7 @@ public class Tile extends AQ_Object {
 
                         xStart = mStartX + 5;
                         yStart = mStartY + 5;
-                        drawObjectAtPos(g, ob, img, xStart, yStart);
+                        drawObjectAtPos(g, ob, xStart, yStart);
                     }
 
                 }
@@ -272,13 +278,25 @@ public class Tile extends AQ_Object {
         }
     }
 
-    public void drawObjectAtPos(Graphics g, AQ_Object ob, BufferedImage img, int pStartX, int pStartY) {
+    /**
+     * This methods take an Arcadia Quest Object and the x and y starting location
+     * to draw the image of the Object and also draws an outline around the image,
+     * if the object is selected.
+     * 
+     * @param g          graphic Object, used to draw
+     * @param pAq_Object Object with image that will be drawn
+     * @param pStartX    x starting location, when drawing
+     * @param pStartY    y starting location, when drawing
+     */
+    public void drawObjectAtPos(Graphics g, AQ_Object pAq_Object, int pStartX, int pStartY) {
+        BufferedImage img = pAq_Object.getImage();
+
         int xEnd = img.getWidth();
         int yEnd = img.getHeight();
 
         g.drawImage(img, pStartX, pStartY, xEnd, yEnd, null);
         // Draw Border
-        if (mSelectedObject != null && ob == mSelectedObject) {
+        if (mSelectedObject != null && pAq_Object == mSelectedObject) {
             g.setColor(Color.BLACK);
             g.drawRect(pStartX - 1, pStartY - 1, xEnd + 1, yEnd + 1);
         }
@@ -291,6 +309,14 @@ public class Tile extends AQ_Object {
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
+    /**
+     * Takes a Path to the file with the images and the used type. Then iterates
+     * over all image and stores them in a BufferedImage Array.
+     * 
+     * @param pPicturePath path to the pictures
+     * @param pPictureType type of the pictures (png, jpeg, etc.)
+     * @return BufferedImage Array (5)
+     */
     public static BufferedImage[] readImages(String pPicturePath, String pPictureType) {
         BufferedImage[] images = new BufferedImage[5];
         try {
@@ -304,9 +330,17 @@ public class Tile extends AQ_Object {
         return images;
     }
 
-    public static BufferedImage resize(BufferedImage img, int width, int height) {
-        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    /**
+     * Takes an Image and resizes it to the given width and height.
+     * 
+     * @param pImage  Image to resize
+     * @param pWidth  new width of the image
+     * @param pHeight new height of the image
+     * @return resized BufferedImage
+     */
+    public static BufferedImage resize(BufferedImage pImage, int pWidth, int pHeight) {
+        Image tmp = pImage.getScaledInstance(pWidth, pHeight, Image.SCALE_SMOOTH);
+        BufferedImage resized = new BufferedImage(pWidth, pHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = resized.createGraphics();
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
@@ -461,6 +495,12 @@ public class Tile extends AQ_Object {
         }
     }
 
+    /**
+     * Calculates the current size used by all Objects in it. If the size is two
+     * then objects with a size more or equal to 1 can not be added to the list.
+     * 
+     * @return currently used space of the Tile
+     */
     private int getCurrentSize() {
         int currentSize = 0;
         for (AQ_Object o : mNormalObjects) {
@@ -628,6 +668,14 @@ public class Tile extends AQ_Object {
         mSelectedObject = null;
     }
 
+    /**
+     * Adds a given Arcadia Quest Object to the list of Objects, if the overall
+     * amount of the Tiles Objects does not exceed 4 and the size of all Objects
+     * does not exceed 2.
+     * 
+     * @param pObject AQ_Object to add
+     * @see AQ_Object
+     */
     public void addAqObject(AQ_Object pObject) {
         if (mNormalObjects.size() < 4) {
             if (pObject instanceof Monster) {
@@ -647,6 +695,13 @@ public class Tile extends AQ_Object {
         mNormalObjects = pObjects;
     }
 
+    /**
+     * Removes the given Arcadia Quest Object, if the amount of all Object of the
+     * Tile is greater than 0.
+     * 
+     * @param pObject AQ_Object to remove
+     * @see AQ_Object
+     */
     public void removeAqObject(AQ_Object pObject) {
         if (mNormalObjects.size() >= 1) {
             mNormalObjects.remove(pObject);
