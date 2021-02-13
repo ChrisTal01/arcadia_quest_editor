@@ -166,11 +166,18 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
                 mCurrentMapPanel.revalidate();
                 mCurrentMapPanel.repaint();
             }
+
+            if (mCurrentDoor != null) {
+
+            }
         }
 
         mCurrentMap = null;
         mCurrentAqObject = null;
         mCurrentDoor = null;
+        for (MapPanel mp : mMapPanels) {
+            mp.setShowDoorOutline(false);
+        }
     }
 
     @Override

@@ -148,6 +148,10 @@ public class Tile extends AQ_Object {
 
             // draw door outline
             if (mShowDoorOutline) {
+                System.out.println(mStartX + " und " + mStartY);
+                for (int i = 0; i < mNeighbors.length; i++)
+                    if (mNeighbors[i] != null)
+                        System.out.println(mNeighbors[i]);
 
                 int xStart;
                 int yStart;
@@ -155,17 +159,17 @@ public class Tile extends AQ_Object {
                 int yEnd;
                 // draw Door outline
                 // Top
-                if (mNeighbors[0] != null && mDoors[0] != null) {
+                if (mNeighbors[0] != null && mDoors[0] == null) {
                     xStart = mStartX + 5;
                     yStart = mStartY - 10;
                     xEnd = mSize - 2 * xStart;
-                    yEnd = mDoors[0].getPrefImageHeight();
+                    yEnd = 20;
                     g.setColor(Color.BLUE);
                     g.drawRect(xStart, yStart, xEnd, yEnd);
                 }
 
                 // Right
-                if (mNeighbors[1] != null && mDoors[1] != null) {
+                if (mNeighbors[1] != null && mDoors[1] == null) {
                     xStart = mStartX + (mSize - 10);
                     yStart = mStartY + 15;
                     xEnd = 20;
@@ -175,17 +179,17 @@ public class Tile extends AQ_Object {
                 }
 
                 // Bottom
-                if (mNeighbors[2] != null && mDoors[2] != null) {
+                if (mNeighbors[2] != null && mDoors[2] == null) {
                     xStart = mStartX + 5;
-                    yStart = mStartY + (mSize - mDoors[2].getPrefImageHeight() / 2);
+                    yStart = mStartY + (mSize - 10);// (mSize - mDoors[2].getPrefImageHeight() / 2);
                     xEnd = mSize - 2 * xStart;
-                    yEnd = mDoors[2].getPrefImageHeight();
+                    yEnd = 20;
                     g.setColor(Color.BLUE);
                     g.drawRect(xStart, yStart, xEnd, yEnd);
                 }
 
                 // Left
-                if (mNeighbors[3] != null && mDoors[3] != null) {
+                if (mNeighbors[3] != null && mDoors[3] == null) {
                     xStart = mStartX - 10;
                     yStart = mStartY + 15;
                     xEnd = 20;
