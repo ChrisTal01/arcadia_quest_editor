@@ -155,7 +155,7 @@ public class Tile extends AQ_Object {
                 int yEnd;
                 // draw Door outline
                 // Top
-                if (mNeighbors[0] != null && mDoors[0] == null) {
+                if (mNeighbors[0] != null && mDoors[0] != null) {
                     xStart = mStartX + 5;
                     yStart = mStartY - 10;
                     xEnd = mSize - 2 * xStart;
@@ -165,7 +165,7 @@ public class Tile extends AQ_Object {
                 }
 
                 // Right
-                if (mNeighbors[1] != null && mDoors[1] == null) {
+                if (mNeighbors[1] != null && mDoors[1] != null) {
                     xStart = mStartX + (mSize - 10);
                     yStart = mStartY + 15;
                     xEnd = 20;
@@ -175,7 +175,7 @@ public class Tile extends AQ_Object {
                 }
 
                 // Bottom
-                if (mNeighbors[2] != null && mDoors[2] == null) {
+                if (mNeighbors[2] != null && mDoors[2] != null) {
                     xStart = mStartX + 5;
                     yStart = mStartY + (mSize - mDoors[2].getPrefImageHeight() / 2);
                     xEnd = mSize - 2 * xStart;
@@ -185,7 +185,7 @@ public class Tile extends AQ_Object {
                 }
 
                 // Left
-                if (mNeighbors[3] != null && mDoors[3] == null) {
+                if (mNeighbors[3] != null && mDoors[3] != null) {
                     xStart = mStartX - 10;
                     yStart = mStartY + 15;
                     xEnd = 20;
@@ -198,7 +198,7 @@ public class Tile extends AQ_Object {
     }
 
     public void paintDoors(Graphics g) {
-        System.out.println("Draw Doors");
+        // System.out.println("Draw Doors");
     }
 
     public void paintMonsters(Graphics g) {
