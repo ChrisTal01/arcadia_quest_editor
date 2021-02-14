@@ -167,8 +167,10 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
                 mCurrentMapPanel.repaint();
             }
 
-            if (mCurrentDoor != null) {
-
+            if (mCurrentDoor != null && mCurrentTile != null) {
+                System.out.println(x);
+                System.out.println(y);
+                mCurrentTile.setDoorAtLocation(mCurrentDoor, (int) x, (int) y);
             }
         }
 

@@ -161,42 +161,46 @@ public class Tile extends AQ_Object {
 
         // Top
         if (mNeighbors[0] != null && mDoors[0] == null) {
-            xStart = mStartX + 5;
-            yStart = mStartY - 10;
-            xEnd = mSize - 2 * xStart;
+            xStart = mStartX + (mSize / 10);
+            yStart = mStartY - (mSize / 10);
+            xEnd = mSize - 2 * (mSize / 10);
             yEnd = 20;
+
             g.setColor(Color.BLUE);
             g.drawRect(xStart, yStart, xEnd, yEnd);
         }
 
         // Right
         if (mNeighbors[1] != null && mDoors[1] == null) {
-            xStart = mStartX + (mSize - 10);
+            xStart = mStartX + (mSize - (mSize / 10));
             yStart = mStartY + 15;
             xEnd = 20;
-            yEnd = mSize - 2 * yStart;
+            yEnd = mSize - 2 * ((mSize / 10) + 3);
+
             g.setColor(Color.BLUE);
             g.drawRect(xStart, yStart, xEnd, yEnd);
         }
 
         // Bottom
         if (mNeighbors[2] != null && mDoors[2] == null) {
-            xStart = mStartX + 5;
-            yStart = mStartY + (mSize - 10);
-            xEnd = mSize - 2 * xStart;
-            yEnd = 20;
-            g.setColor(Color.BLUE);
-            g.drawRect(xStart, yStart, xEnd, yEnd);
+            /*
+             * xStart = mStartX + 5; yStart = mStartY + (mSize - 10); xEnd = mSize - 2 *
+             * (mSize / 10); yEnd = 20;
+             * 
+             * g.setColor(Color.BLUE); g.drawRect(xStart, yStart, xEnd, yEnd);
+             */
         }
 
         // Left
         if (mNeighbors[3] != null && mDoors[3] == null) {
-            xStart = mStartX - 10;
+            xStart = mStartX - (mSize / 10);
             yStart = mStartY + 15;
             xEnd = 20;
-            yEnd = mSize - 2 * yStart;
+            yEnd = mSize - 2 * ((mSize / 10) + 3);
+
             g.setColor(Color.BLUE);
             g.drawRect(xStart, yStart, xEnd, yEnd);
+
         }
     }
 
@@ -442,8 +446,6 @@ public class Tile extends AQ_Object {
             img = o.getImage();
             startW = mStartX + (mSize / 2 - img.getWidth() / 2);
             startH = mStartY + (mSize / 2 - img.getHeight() / 2);
-            System.out.println(startW);
-            System.out.println(startH);
             if (pPosX >= startW && pPosY >= startH && pPosX <= startW + img.getWidth()
                     && pPosY <= startH + img.getHeight()) {
                 mSelectedObject = o;
@@ -554,14 +556,13 @@ public class Tile extends AQ_Object {
      */
 
     public void setDoorAtLocation(Door pDoor, int pPosX, int pPosY) {
-        int DoorEdgeSpace = 3;
         int xStart, yStart, xEnd, yEnd;
 
         // Top
-        xStart = 5;
-        yStart = 0;
-        xEnd = mSize - 2 * xStart;
-        yEnd = pDoor.getPrefImageHeight();
+        xStart = mStartX + (mSize / 10);
+        yStart = mStartY - (mSize / 10);
+        xEnd = mSize - 2 * (mSize / 10);
+        yEnd = 20;
         if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
             System.out.println("Top");
             mDoors[0] = pDoor;
@@ -571,10 +572,10 @@ public class Tile extends AQ_Object {
         }
 
         // Right
-        xStart = mSize - pDoor.getPrefImageHeight() / 2;
-        yStart = DoorEdgeSpace;
-        xEnd = mSize;
-        yEnd = mSize - DoorEdgeSpace;
+        xStart = mStartX + (mSize - (mSize / 10));
+        yStart = mStartY + 15;
+        xEnd = 20;
+        yEnd = mSize - 2 * ((mSize / 10) + 3);
         if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
             System.out.println("Right");
             mDoors[1] = pDoor;
@@ -599,10 +600,10 @@ public class Tile extends AQ_Object {
         }
 
         // Left
-        xStart = 0;
-        yStart = DoorEdgeSpace;
-        xEnd = pDoor.getPrefImageHeight() / 2;
-        yEnd = mSize - DoorEdgeSpace;
+        xStart = mStartX - (mSize / 10);
+        yStart = mStartY + 15;
+        xEnd = 20;
+        yEnd = mSize - 2 * ((mSize / 10) + 3);
         if (pPosX >= xStart && pPosY >= yStart && pPosX <= xEnd && pPosY <= yEnd) {
             System.out.println("Left");
             mDoors[3] = pDoor;
