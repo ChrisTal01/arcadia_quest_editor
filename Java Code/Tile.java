@@ -141,63 +141,62 @@ public class Tile extends AQ_Object {
 
     public void paintBackground(Graphics g) {
         // only draw if background image is not null
-        if (mCurrentImage != null) {
-            // draw background
-            mCurrentImage = resize(mCurrentImage, mSize, mSize);
-            g.drawImage(mCurrentImage, mStartX, mStartY, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
+        if (mCurrentImage == null) {
+            return;
+        }
+        // draw background
+        mCurrentImage = resize(mCurrentImage, mSize, mSize);
+        g.drawImage(mCurrentImage, mStartX, mStartY, mCurrentImage.getWidth(), mCurrentImage.getHeight(), null);
 
-            // draw door outline
-            if (mShowDoorOutline) {
-                System.out.println(mStartX + " und " + mStartY);
-                for (int i = 0; i < mNeighbors.length; i++)
-                    if (mNeighbors[i] != null)
-                        System.out.println(mNeighbors[i]);
+        // only draw door outline if door is selected
+        if (!mShowDoorOutline) {
+            return;
+        }
 
-                int xStart;
-                int yStart;
-                int xEnd;
-                int yEnd;
-                // draw Door outline
-                // Top
-                if (mNeighbors[0] != null && mDoors[0] == null) {
-                    xStart = mStartX + 5;
-                    yStart = mStartY - 10;
-                    xEnd = mSize - 2 * xStart;
-                    yEnd = 20;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
+        int xStart;
+        int yStart;
+        int xEnd;
+        int yEnd;
+        // draw Door outline
 
-                // Right
-                if (mNeighbors[1] != null && mDoors[1] == null) {
-                    xStart = mStartX + (mSize - 10);
-                    yStart = mStartY + 15;
-                    xEnd = 20;
-                    yEnd = mSize - 2 * yStart;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
+        // Top
+        if (mNeighbors[0] != null && mDoors[0] == null) {
+            xStart = mStartX + 5;
+            yStart = mStartY - 10;
+            xEnd = mSize - 2 * xStart;
+            yEnd = 20;
+            g.setColor(Color.BLUE);
+            g.drawRect(xStart, yStart, xEnd, yEnd);
+        }
 
-                // Bottom
-                if (mNeighbors[2] != null && mDoors[2] == null) {
-                    xStart = mStartX + 5;
-                    yStart = mStartY + (mSize - 10);// (mSize - mDoors[2].getPrefImageHeight() / 2);
-                    xEnd = mSize - 2 * xStart;
-                    yEnd = 20;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
+        // Right
+        if (mNeighbors[1] != null && mDoors[1] == null) {
+            xStart = mStartX + (mSize - 10);
+            yStart = mStartY + 15;
+            xEnd = 20;
+            yEnd = mSize - 2 * yStart;
+            g.setColor(Color.BLUE);
+            g.drawRect(xStart, yStart, xEnd, yEnd);
+        }
 
-                // Left
-                if (mNeighbors[3] != null && mDoors[3] == null) {
-                    xStart = mStartX - 10;
-                    yStart = mStartY + 15;
-                    xEnd = 20;
-                    yEnd = mSize - 2 * yStart;
-                    g.setColor(Color.BLUE);
-                    g.drawRect(xStart, yStart, xEnd, yEnd);
-                }
-            }
+        // Bottom
+        if (mNeighbors[2] != null && mDoors[2] == null) {
+            xStart = mStartX + 5;
+            yStart = mStartY + (mSize - 10);
+            xEnd = mSize - 2 * xStart;
+            yEnd = 20;
+            g.setColor(Color.BLUE);
+            g.drawRect(xStart, yStart, xEnd, yEnd);
+        }
+
+        // Left
+        if (mNeighbors[3] != null && mDoors[3] == null) {
+            xStart = mStartX - 10;
+            yStart = mStartY + 15;
+            xEnd = 20;
+            yEnd = mSize - 2 * yStart;
+            g.setColor(Color.BLUE);
+            g.drawRect(xStart, yStart, xEnd, yEnd);
         }
     }
 
@@ -206,77 +205,79 @@ public class Tile extends AQ_Object {
     }
 
     public void paintMonsters(Graphics g) {
-        if (mCurrentImage != null) {
-            // draw Monsters
-            if (mNormalObjects != null && mNormalObjects.size() > 0) {
-                // draw Object in the center of Tile
-                int amount = mNormalObjects.size();
-                // dummy Image
-                BufferedImage img;
-                AQ_Object ob;
-                int xStart;
-                int yStart;
+        // only draw if background image is not null
+        if (mCurrentImage == null) {
+            return;
+        }
+        // only draw Monsters if Tile has Objects
+        if (mNormalObjects == null || mNormalObjects.size() <= 0) {
+            return;
+        }
 
-                if (amount == 1) {
-                    // Center of Tile
-                    ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-                    img = ob.getImage();
+        int amount = mNormalObjects.size();
+        // dummy Image
+        BufferedImage img;
+        AQ_Object ob;
+        int xStart;
+        int yStart;
 
-                    xStart = mStartX + (mSize / 2 - img.getWidth() / 2);
-                    yStart = mStartY + (mSize / 2 - img.getHeight() / 2);
-                    drawObjectAtPos(g, ob, xStart, yStart);
+        if (amount == 1) {
+            // Center of Tile
+            ob = mNormalObjects.get(0);
+            ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+            img = ob.getImage();
 
-                } else {
-                    ////
-                    // Top-Right
-                    ////
-                    ob = mNormalObjects.get(0);
-                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-                    img = ob.getImage();
+            xStart = mStartX + (mSize / 2 - img.getWidth() / 2);
+            yStart = mStartY + (mSize / 2 - img.getHeight() / 2);
+            drawObjectAtPos(g, ob, xStart, yStart);
 
-                    xStart = mStartX + (mSize - img.getWidth() - 5);
-                    yStart = mStartY + 5;
-                    drawObjectAtPos(g, ob, xStart, yStart);
+        } else {
+            ////
+            // Top-Right
+            ////
+            ob = mNormalObjects.get(0);
+            ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+            img = ob.getImage();
 
-                    ////
-                    // Bottom-Left
-                    ////
+            xStart = mStartX + (mSize - img.getWidth() - 5);
+            yStart = mStartY + 5;
+            drawObjectAtPos(g, ob, xStart, yStart);
 
-                    ob = mNormalObjects.get(1);
-                    ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-                    img = ob.getImage();
+            ////
+            // Bottom-Left
+            ////
 
-                    xStart = mStartX + 5;
-                    yStart = mStartY + (mSize - img.getHeight() - 5);
-                    drawObjectAtPos(g, ob, xStart, yStart);
+            ob = mNormalObjects.get(1);
+            ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+            img = ob.getImage();
 
-                    if (amount >= 3) {
-                        ////
-                        // Bottom-Right
-                        ////
-                        ob = mNormalObjects.get(2);
-                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-                        img = ob.getImage();
+            xStart = mStartX + 5;
+            yStart = mStartY + (mSize - img.getHeight() - 5);
+            drawObjectAtPos(g, ob, xStart, yStart);
 
-                        xStart = mStartX + (mSize - img.getWidth() - 5);
-                        yStart = mStartY + (mSize - img.getHeight() - 5);
-                        drawObjectAtPos(g, ob, xStart, yStart);
-                    }
-                    if (amount == 4) {
-                        ////
-                        // Top-Left
-                        ////
-                        ob = mNormalObjects.get(3);
-                        ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
-                        img = ob.getImage();
+            if (amount >= 3) {
+                ////
+                // Bottom-Right
+                ////
+                ob = mNormalObjects.get(2);
+                ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                img = ob.getImage();
 
-                        xStart = mStartX + 5;
-                        yStart = mStartY + 5;
-                        drawObjectAtPos(g, ob, xStart, yStart);
-                    }
+                xStart = mStartX + (mSize - img.getWidth() - 5);
+                yStart = mStartY + (mSize - img.getHeight() - 5);
+                drawObjectAtPos(g, ob, xStart, yStart);
+            }
+            if (amount == 4) {
+                ////
+                // Top-Left
+                ////
+                ob = mNormalObjects.get(3);
+                ob.setImage(resize(ob.getImage(), ob.getPrefImageWidth(), ob.getPrefImageHeight()));
+                img = ob.getImage();
 
-                }
+                xStart = mStartX + 5;
+                yStart = mStartY + 5;
+                drawObjectAtPos(g, ob, xStart, yStart);
             }
 
         }
@@ -293,6 +294,7 @@ public class Tile extends AQ_Object {
      * @param pStartY    y starting location, when drawing
      */
     public void drawObjectAtPos(Graphics g, AQ_Object pAq_Object, int pStartX, int pStartY) {
+
         BufferedImage img = pAq_Object.getImage();
 
         int xEnd = img.getWidth();
