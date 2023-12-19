@@ -1,0 +1,44 @@
+package src.main.java.arcadia.entities;
+
+import java.awt.image.BufferedImage;
+
+public class Door extends AQ_Object {
+
+    private Door mCounterPart;
+    private BufferedImage mVertikalImage;
+
+    public Door(String pPath, String pVertikalImagePath, String pName, GameType pGameBox, int pPrefIconWidth,
+                int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
+        super(pPath, pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
+        mCounterPart = null;
+        mVertikalImage = readImage(pVertikalImagePath);
+    }
+
+    public Door(Door pDoor) {
+        super(pDoor.getImagePath(), pDoor.getName(), pDoor.getGameBox(), pDoor.getPrefIconWidth(),
+                pDoor.getPrefIconHeight(), pDoor.getPrefImageWidth(), pDoor.getPrefImageHeight());
+        copy(pDoor);
+    }
+
+    public void setCounterPart(Door pDoor) {
+        mCounterPart = pDoor;
+    }
+
+    public Door getCounterPart() {
+        return mCounterPart;
+    }
+
+    public void setVertikalImage(BufferedImage pImg) {
+        mVertikalImage = pImg;
+    }
+
+    public BufferedImage getVertikalImage() {
+        return mVertikalImage;
+    }
+
+    public void copy(Door pDoor) {
+        this.setVertikalImage(deepCopy(pDoor.getVertikalImage()));
+        // this.setCounterPart(new Door(pDoor.getCounterPart()));
+    }
+
+}
