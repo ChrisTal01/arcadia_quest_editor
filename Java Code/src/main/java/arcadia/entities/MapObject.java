@@ -1,17 +1,19 @@
 package src.main.java.arcadia.entities;
 
+import java.io.File;
+
 public class MapObject extends AQ_Object {
 
-    private static final String IMAGE_PATH = "MapParts\\Map";
+    private static final String IMAGE_PATH = "MapParts/Map";
     private MapObject mCounterPart;
     private Tile[] mTiles = new Tile[9];
 
     public MapObject(String pPath, String pName, GameType pGameBox) {
-        super(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()) + "\\map\\"
-                + pName.replace(" ", "_") + "_Normal.png", pName, pGameBox);
+        super(new File(pPath ,IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()) + "\\map\\"
+                + pName.replace(" ", "_") + "_Normal.png"), pName, pGameBox);
 
         for (int i = 0; i < mTiles.length; i++) {
-            mTiles[i] = new Tile(pPath + IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length()),
+            mTiles[i] = new Tile(new File(pPath , IMAGE_PATH + pName.substring(pName.lastIndexOf(" ") + 1, pName.length())).getPath(),
                     String.valueOf(i), pGameBox);
         }
         mCounterPart = null;

@@ -18,17 +18,18 @@ import java.util.logging.Logger;
  * @author muell
  */
 public class ResizeImage {
+
+    private static final String PATH = "F:/arcadia_quest_editor/ArcadiaQuestData/PoisonDragon/MapParts";
     public static void main(String[] args) {
         
-        File file = new File("C:\\Users\\muell\\Desktop\\ArcadiaQuestEditor\\AQ\\MapParts\\");
+        File file = new File(PATH);
         File[] mapFolder = file.listFiles();
         for(File mf : mapFolder){
             File[] imgFolder = mf.listFiles();
             for(File imgf: imgFolder){
                 File[] images = imgf.listFiles();
                 for(File png : images){
-                    String path = png.getAbsolutePath().replace("//", "////");
-                    saveImage(path);
+                    saveImage(png);
                 }
             }
         }
@@ -43,13 +44,13 @@ public class ResizeImage {
         return resizedImage;
     }
     
-    private static void saveImage(String fullPath){
+    private static void saveImage(File filePath){
         try {
-            BufferedImage originalImage = ImageIO.read(new File(fullPath));//change path to where file is located
+            BufferedImage originalImage = ImageIO.read(filePath);//change path to where file is located
             int type = originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType();
             BufferedImage resizeImageJpg = resizeImage(originalImage, type, 550, 550);
             try {
-                ImageIO.write(resizeImageJpg, "jpg", new File(fullPath)); //change path where you want it saved
+                ImageIO.write(resizeImageJpg, "jpg", filePath); //change path where you want it saved
             } catch (IOException ex) {
                 Logger.getLogger(ResizeImage.class.getName()).log(Level.SEVERE, null, ex);
             }

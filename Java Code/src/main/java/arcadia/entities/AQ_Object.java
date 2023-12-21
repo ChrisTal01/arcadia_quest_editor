@@ -13,7 +13,7 @@ public class AQ_Object {
     private String mName;
     private BufferedImage mImage;
     private GameType mGameBox;
-    private String mImagePath;
+    private File mImageFile;
 
     private int mPrefIconHeight;
     private int mPrefIconWidth;
@@ -25,7 +25,6 @@ public class AQ_Object {
      * 
      * @param pImagePath       path to the image of the Object
      * @param pName            name of the Object
-     * @param pAmount          amount of Objects that can be used
      * @param pGameBox         number of the src.main.java.arcadia.entities.Gamebox the Object belongs to
      * @param pPrefIconWidth   the prefed icon width the image should have when
      *                         showed in the select menu
@@ -36,10 +35,10 @@ public class AQ_Object {
      * @param pPrefImageHeight the prefed image height the image should have when
      *                         showed on the src.main.java.arcadia.entities.Tile
      */
-    public AQ_Object(String pImagePath, String pName, GameType pGameBox, int pPrefIconWidth,
+    public AQ_Object(File pImagePath, String pName, GameType pGameBox, int pPrefIconWidth,
                      int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
         mImage = readImage(pImagePath);
-        mImagePath = pImagePath;
+        mImageFile = pImagePath;
         mName = pName;
         mGameBox = pGameBox;
         mPrefIconWidth = pPrefIconWidth;
@@ -48,9 +47,9 @@ public class AQ_Object {
         mPrefImageHeight = pPrefImageHeight;
     }
 
-    public AQ_Object(String pImagePath, String pName, GameType pGameBox) {
+    public AQ_Object(File pImagePath, String pName, GameType pGameBox) {
         mImage = readImage(pImagePath);
-        mImagePath = pImagePath;
+        mImageFile = pImagePath;
         mName = pName;
         mGameBox = pGameBox;
         mPrefIconWidth = 1;
@@ -63,10 +62,10 @@ public class AQ_Object {
         copy(pObject);
     }
 
-    public static BufferedImage readImage(String pPath) {
+    public static BufferedImage readImage(File file) {
         BufferedImage image = null;
         try {
-            image = ImageIO.read(new File(pPath));
+            image = ImageIO.read(file);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);
@@ -86,8 +85,8 @@ public class AQ_Object {
         return mGameBox;
     }
 
-    public String getImagePath() {
-        return mImagePath;
+    public File getImagePath() {
+        return mImageFile;
     }
 
 
@@ -95,8 +94,8 @@ public class AQ_Object {
         mName = pName;
     }
 
-    public void setImagePath(String pPath) {
-        mImagePath = pPath;
+    public void setImagePath(File file) {
+        mImageFile = file;
     }
 
     public void setGameBox(GameType pGameBox) {

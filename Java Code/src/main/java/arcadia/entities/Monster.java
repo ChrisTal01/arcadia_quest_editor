@@ -1,24 +1,22 @@
 package src.main.java.arcadia.entities;
 
+import java.io.File;
+
 public class Monster extends AQ_Object implements ITileObject{
     private MonsterType mMonsterType;
     private MonsterSize mSize;
-    // private int mPrefIconWidth;
-    // private int mPrefIconHeight;
-    // private int mPrefTileWidth;
-    // private int mPrefTileHeight;
 
 
     public Monster(String pPath, String pName, GameType pGameBox, MonsterSize pSize, MonsterType pMonsterType,
                    int pPrefIconWidth, int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
-        super(pPath, pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
+        super(new File(pPath), pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mSize = pSize;
         mMonsterType = pMonsterType;
     }
 
     public Monster(String pPath, String pName, GameType pGameBox, MonsterSize pSize, String pMonsterTypeString,
                    int pPrefIconWidth, int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
-        super(pPath, pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
+        super(new File(pPath), pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mSize = pSize;
         mMonsterType = MonsterType.toMonsterType(pMonsterTypeString);
 

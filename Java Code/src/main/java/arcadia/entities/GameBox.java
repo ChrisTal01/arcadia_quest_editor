@@ -7,6 +7,8 @@ import java.util.*;
 
 public class GameBox {
 
+    private static final String DATA_FOLDER = "/ArcadiaQuestData/";
+
     private final String mName;
     private final GameType mGameType;
     private final String mPath;
@@ -24,17 +26,40 @@ public class GameBox {
 
         // init Maps
         mMapObjects = new ArrayList<>();
-        File mapFile = new File(mPath + "MapParts\\");
-        File[] maps = mapFile.listFiles();
-        for (File f : maps) {
-            mMapObjects.add(new MapObject(mPath, f.getName().replace("Map", "Mapteil "), pGameType));
+        File mapFile = new File(mPath,"MapParts");
+        if(mapFile.exists()){
+            File[] maps = mapFile.listFiles();
+            for (File f : maps) {
+                mMapObjects.add(new MapObject(mPath, f.getName().replace("Map", "Mapteil "), mGameType));
+            }
         }
 
         // init Monsters
-        aqMonsterAmount = CsvReader.readMonsterCSV(mPath + "Monsters\\", "Monster.csv",mGameType);
+        aqMonsterAmount = CsvReader.readMonsterCSV(new File(mPath ,"Monsters"), "Monster.csv",mGameType);
 
         // initObjects
-        aqObjectAmount = CsvReader.readObjectCSV(mPath + "Tokens\\", "Token.csv",mGameType);
+        aqObjectAmount = CsvReader.readObjectCSV(new File(mPath ,"Tokens"), "Token.csv",mGameType);
+    }
+
+    public GameBox(String pPath, GameType pGameType) {
+        mGameType = pGameType;
+        mPath = new File(pPath + DATA_FOLDER + mGameType.getFolderName()).getAbsolutePath();
+        mName = mGameType.getName();
+        // init Maps
+        mMapObjects = new ArrayList<>();
+        File mapFile = new File(mPath,  "MapParts");
+        if(mapFile.exists()){
+            File[] maps = mapFile.listFiles();
+            for (File f : maps) {
+                mMapObjects.add(new MapObject(mPath, f.getName().replace("Map", "Mapteil "), mGameType));
+            }
+        }
+
+        // init Monsters
+        aqMonsterAmount = CsvReader.readMonsterCSV(new File(mPath ,"Monsters"), "Monster.csv",mGameType);
+
+        // initObjects
+        aqObjectAmount = CsvReader.readObjectCSV(new File(mPath ,"Tokens"), "Token.csv",mGameType);
     }
 
     /**

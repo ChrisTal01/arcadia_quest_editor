@@ -1,0 +1,6 @@
+Game;Name;Picture;Type;Size;Amount;PrefIconHeight;PrefIconWidth;PrefImageWidth;PrefImageHeight
+Pets;Euninchen;Euninchen.png;Minor Minion;0;1;55;55;45;45
+Pets;Wildes Tier;Wildes_Tier.png;Minor Minion;0;6;55;55;45;45
+Pets;Hornigel;Hornigel.png;Major Minion;1;4;90;75;70;65
+Pets;Korilla;Korilla.png;Major Minion;1;2;100;75;75;50
+Pets;Vexia;Vexia.png;Major Villion;1;1;55;55;55;55

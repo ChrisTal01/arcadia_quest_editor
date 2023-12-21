@@ -58,6 +58,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     @Override
     public void mousePressed(MouseEvent e) {
+        System.out.println("###########");
+        System.out.println("mousePressed");
 
         // reset specific objects
         mSelectedAqObject = null;
@@ -76,7 +78,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // Press on ObjectLabel
         if (e.getSource() instanceof ObjectLabel) {
-            System.out.println("Mouse Cliecked ObjectLabel");
+            //System.out.println("Mouse Cliecked ObjectLabel");
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
@@ -89,7 +91,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on MapLabel
         if (e.getSource() instanceof MapLabel) {
-            System.out.println("Mouse Cliecked MapLabel");
+            //System.out.println("Mouse Cliecked MapLabel");
             mCurrentMapLabel = (MapLabel) e.getSource();
             mCurrentMapObject = mCurrentMapLabel.getMap();
         }
@@ -108,7 +110,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on Tile with right Click and shift
         if (e.getButton() == MouseEvent.BUTTON3 && !mShiftPressed && !mMenuOpen && e.getSource() instanceof MapPanel) {
-            System.out.println("Pressed right");
+            //System.out.println("Pressed right");
             mCurrentMapPanel = (MapPanel) e.getSource();
             mCurrentTile = mCurrentMapPanel.getTileAtLocation(e.getX(), e.getY());
             if (mCurrentTile != null) {
@@ -150,6 +152,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        System.out.println("###########");
+        System.out.println("mouseReleased");
         // Release on MapPanel
         if (mCurrentMapObject != null && mCurrentMapPanel != null) {
             mCurrentMapPanel.setMap(mCurrentMapObject);
@@ -187,11 +191,11 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        // Enter src.main.java.arcadia.application.ObjectLabel
+        // Enter ObjectLabel
         if (e.getSource() instanceof ObjectLabel) {
-            // System.out.println("src.main.java.arcadia.application.ObjectLabel");
+            // System.out.println("ObjectLabel");
         }
-        // Enter src.main.java.arcadia.entities.MapPanel
+        // Enter MapPanel
         if (e.getSource() instanceof MapPanel) {
             mCurrentMapPanel = (MapPanel) e.getSource();
             mCurrentMainPanel = (JPanel) mCurrentMapPanel.getParent();
@@ -219,7 +223,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
     public void keyPressed(KeyEvent e) {
         // Backspace or delete (numpad) or delete
         if (e.getKeyCode() == 8 || e.getKeyCode() == 110 || e.getKeyCode() == 127) {
-            // remove selected Object from src.main.java.arcadia.entities.Tile Panel
+            // remove selected Object from Tile Panel
             if (mSelectedAqObject != null && mSelectedTile != null) {
                 mSelectedTile.removeAqObject(mSelectedAqObject);
                 mSelectedTile.deSelectObject();

@@ -1,12 +1,12 @@
 Game;Name;Picture;Type;Size;Amount;PrefIconHeight;PrefIconWidth;PrefImageWidth;PrefImageHeight
-Inferno;Harpyie;Harpyie.png;Minor Minion;1;6;75;75;55;55
-Inferno;Dämonin;Dämonin.png;Minor Minion;1;6;90;75;70;65
-Inferno;Feuerteufel;Feuerteufel.png;Major Minion;1;2;100;75;75;50
-Inferno;Höllenhund;Höllenhund.png;Major Minion;1;2;75;75;65;65
-Inferno;Benjamin;Benjamin.png;Minor Villion;1;1;60;75;45;55
-Inferno;Primadonna;Primadonna.png;Minor Villion;1;1;75;75;55;55
-Inferno;Der Unterfürst;Der_Unterfürst.png;Major Villion;2;1;90;75;70;55
-Inferno;Der Wanderer;Der_Wanderer.png;Minor Villion;1;1;75;75;75;75
+Inferno;Harpyie;Harpyie.png;Minor Minion;1;6;55;55;60;60
+Inferno;Dämonin;Dämonin.png;Minor Minion;1;6;70;65;80;65;
+Inferno;Feuerteufel;Feuerteufel.png;Major Minion;1;2;100;75;75;75
+Inferno;Höllenhund;Höllenhund.png;Major Minion;1;2;70;60;75;60
+Inferno;Benjamin;Benjamin.png;Minor Villion;1;1;65;65;65;65
+Inferno;Primadonna;Primadonna.png;Minor Villion;1;1;65;65;65;65
+Inferno;Der Unterfürst;Der_Unterfürst.png;Major Villion;2;1;70;55;90;75
+Inferno;Der Wanderer;Der_Wanderer.png;Minor Villion;1;1;65;65;55;55
 Inferno;Justizius;Justizius.png;Minor Villion;1;1;90;75;80;65
-Inferno;Der Richter;Der_Richter.png;Minor Villion;2;1;90;75;80;65
+Inferno;Der Richter;Der_Richter.png;Minor Villion;2;1;90;75;90;75
 Inferno;Wampus;Wampus.png;Minor Villion;1;1;90;75;80;65

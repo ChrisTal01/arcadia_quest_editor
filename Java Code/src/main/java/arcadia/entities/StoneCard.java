@@ -1,12 +1,14 @@
 package src.main.java.arcadia.entities;
 
+import java.io.File;
+
 public class StoneCard extends AQ_Object implements ITileObject{
 
     private StoneCardType mStoneType;
 
     public StoneCard(String pPath, String pName, GameType pGameBox, StoneCardType pStoneType, int pPrefIconWidth,
                      int pPrefIconHeight, int pPrefImageWidth, int pPrefImageHeight) {
-        super(pPath, pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
+        super(new File(pPath), pName, pGameBox, pPrefIconWidth, pPrefIconHeight, pPrefImageWidth, pPrefImageHeight);
         mStoneType = pStoneType;
     }
 

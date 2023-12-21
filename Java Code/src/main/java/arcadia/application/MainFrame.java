@@ -42,10 +42,6 @@ public class MainFrame extends JFrame {
 
     private List<GameBox> gameBoxes = new ArrayList<>();
 
-    private GameBox mArcadiaQuest;
-
-    private GameBox mBeyondTheGrave;
-
     public MainFrame() {
         listener = new MapListener();
         this.setTitle("Editor");
@@ -59,25 +55,31 @@ public class MainFrame extends JFrame {
         initComponents();
     }
 
-    private void initComponents() {
-
-        // GameBoxes
-        String currentPath = "";
+    private void setupGameBoxes(){
+        String mainPath = "";
         try {
-            currentPath = new File(".").getCanonicalPath();
+            mainPath = new File(".").getCanonicalPath();
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
+        gameBoxes.add(new GameBox(mainPath, GameType.ARCADIA_QUEST));
+        gameBoxes.add(new GameBox(mainPath,GameType.BEYOND_THE_GRAVE));
+        gameBoxes.add(new GameBox(mainPath,GameType.INFERNO));
+        gameBoxes.add(new GameBox(mainPath,GameType.WHOLE_LOTTA_LAVA));
+        gameBoxes.add(new GameBox(mainPath,GameType.PETS));
+        gameBoxes.add(new GameBox(mainPath,GameType.FROST_DRAGON));
+        gameBoxes.add(new GameBox(mainPath,GameType.POISON_DRAGON));
+        gameBoxes.add(new GameBox(mainPath,GameType.FIRE_DRAGON));
+        gameBoxes.add(new GameBox(mainPath,GameType.CHAOS_DRAGON));
+        gameBoxes.add(new GameBox(mainPath,GameType.RIDERS));
+        gameBoxes.add(new GameBox(mainPath,GameType.HELL_OF_A_BOX));
 
-        gameBoxes.add(new GameBox(currentPath + "\\ArcadiaQuestData\\ArcadiaQuest\\", "Arcadia Quest",
-                GameType.ARCADIA_QUEST));
+    }
 
-        gameBoxes.add(new GameBox(currentPath + "\\ArcadiaQuestData\\BeyondTheGrave\\", "Beyond The Grave",
-                GameType.BEYOND_THE_GRAVE));
+    private void initComponents() {
 
-        gameBoxes.add(new GameBox(currentPath + "\\ArcadiaQuestData\\Inferno\\", "Inferno",
-                GameType.INFERNO));
+        setupGameBoxes();
 
         // Left Panel
         mPanelLeft = new JPanel();

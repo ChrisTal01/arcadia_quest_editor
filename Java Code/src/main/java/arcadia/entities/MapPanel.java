@@ -10,7 +10,7 @@ import java.awt.Graphics;
 
 public class MapPanel extends JPanel {
 
-    private static int mSize = 399;
+    private static final int mSize = 399; //399, 349
 
     private Tile[] mTiles = new Tile[9];
     private MapPanel[] mNeighbors = { null, null, null, null };
@@ -20,6 +20,7 @@ public class MapPanel extends JPanel {
     private JMenuItem mRotateLeft;
     private JMenuItem mRotate180;
     private JMenuItem mFlip;
+    private JMenuItem removeMap;
 
     private MapPanel mOppositeMapPanel;
     private MapListener mListener;
@@ -69,10 +70,18 @@ public class MapPanel extends JPanel {
             System.out.println("Not yet implemented.");
         });
 
+        removeMap = new JMenuItem("Remove Map");
+        removeMap.addActionListener(e -> {
+            removeMap();
+        });
+
         mPopupMenu.add(mRotateRight);
         mPopupMenu.add(mRotateLeft);
         mPopupMenu.add(mRotate180);
+        /*
         mPopupMenu.add(mFlip);
+        mPopupMenu.add(removeMap);
+        */
     }
 
     /**
@@ -149,7 +158,6 @@ public class MapPanel extends JPanel {
             }
         }
         revalidate();
-
         repaint();
 
     }
@@ -229,6 +237,11 @@ public class MapPanel extends JPanel {
         repaint();
     }
 
+    public void removeMap(){
+        mMapObject = null;
+        removeTiles();
+    }
+
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
      * Getter
@@ -291,6 +304,10 @@ public class MapPanel extends JPanel {
         mNeighbors[pPos] = pNeighbor;
     }
 
+    public void removeNeighborAtPos(int pPos) {
+        mNeighbors[pPos] = null;
+    }
+
     public void setShowDoorOutline(boolean pState) {
         for (Tile t : mTiles) {
             t.setShowDoorOutline(pState);
@@ -304,7 +321,8 @@ public class MapPanel extends JPanel {
             for (int i = 0; i < mTiles.length; i++) {
                 if (pPosX >= mTiles[i].getStartPosX() && pPosY >= mTiles[i].getStartPosY() && pPosX <= mTiles[i].getStartPosX() + mTiles[i].getSize()
                         && pPosY <= mTiles[i].getStartPosY() + mTiles[i].getSize()) {
-                    printPosOfTile(i);
+                    System.out.println(getStringPosOfTile(i));
+                    drawTileMap();
                     return mTiles[i];
                 }
             }
@@ -312,38 +330,20 @@ public class MapPanel extends JPanel {
         return null;
     }
 
-    private void printPosOfTile(int i){
-        switch (i){
-            case 0 :
-                System.out.println("Top Left");
-                break;
-            case 1 :
-                System.out.println("Top");
-                break;
-            case 2 :
-                System.out.println("Top Right");
-                break;
-            case 3 :
-                System.out.println("Middle Left");
-                break;
-            case 4 :
-                System.out.println("Middle");
-                break;
-            case 5 :
-                System.out.println("Middle Right");
-                break;
-            case 6 :
-                System.out.println("Bottom Left");
-                break;
-            case 7 :
-                System.out.println("Bottom");
-                break;
-            case 8 :
-                System.out.println("Bottom Right");
-                break;
-            default:
-                System.out.println("None");
-        }
+
+    private String getStringPosOfTile(int i){
+        return switch (i) {
+            case 0 -> "Top Left";
+            case 1 -> "Top";
+            case 2 -> "Top Right";
+            case 3 -> "Middle Left";
+            case 4 -> "Middle";
+            case 5 -> "Middle Right";
+            case 6 -> "Bottom Left";
+            case 7 -> "Bottom";
+            case 8 -> "Bottom Right";
+            default -> "None";
+        };
     }
 
     private void initNeighbors() {
@@ -387,6 +387,20 @@ public class MapPanel extends JPanel {
         mTiles[8].setNeighborAtPos(mTiles[5], Tile.TOP);
         mTiles[8].setNeighborAtPos(mTiles[7], Tile.LEFT);
 
+    }
+
+    private void drawTileMap(){
+        System.out.println(mTiles[0].getTopDoorString() + mTiles[1].getTopDoorString()+ mTiles[2].getTopDoorString());
+        System.out.println(mTiles[0].getMiddleDoorString(getStringPosOfTile(0)) + mTiles[1].getMiddleDoorString(getStringPosOfTile(1))+ mTiles[2].getMiddleDoorString(getStringPosOfTile(2)));
+        System.out.println(mTiles[0].getBottomDoorString() + mTiles[1].getBottomDoorString()+ mTiles[2].getTopDoorString());
+        System.out.println();
+        System.out.println(mTiles[3].getTopDoorString() + mTiles[4].getTopDoorString()+ mTiles[5].getTopDoorString());
+        System.out.println(mTiles[3].getMiddleDoorString(getStringPosOfTile(3)) + mTiles[4].getMiddleDoorString(getStringPosOfTile(4))+ mTiles[5].getMiddleDoorString(getStringPosOfTile(5)));
+        System.out.println(mTiles[3].getBottomDoorString() + mTiles[4].getBottomDoorString()+ mTiles[6].getTopDoorString());
+        System.out.println();
+        System.out.println(mTiles[6].getTopDoorString() + mTiles[7].getTopDoorString()+ mTiles[8].getTopDoorString());
+        System.out.println(mTiles[6].getMiddleDoorString(getStringPosOfTile(6)) + mTiles[7].getMiddleDoorString(getStringPosOfTile(7))+ mTiles[8].getMiddleDoorString(getStringPosOfTile(8)));
+        System.out.println(mTiles[6].getBottomDoorString() + mTiles[7].getBottomDoorString()+ mTiles[8].getTopDoorString());
     }
 
     public void setNeighbors() {
