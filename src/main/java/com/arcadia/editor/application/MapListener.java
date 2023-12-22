@@ -100,7 +100,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             if(panel.hasMap()){
                 System.out.println("Mouse Pressed MapPanel");
                 System.out.println("MapPanel has Neighbors:"+ panel.hasNeighbors());
-                panel.drawTileMap();
+                panel.getMap().drawTileMap();
             }
         }
         // Press on Map Panel with right Click and shift
@@ -161,7 +161,6 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         // Release on MapPanel
         if (mCurrentMapObject != null && mCurrentMapPanel != null) {
             mCurrentMapPanel.setMap(mCurrentMapObject);
-            mCurrentMapPanel.updateNeighbors();
             mMapPanels.add(mCurrentMapPanel);
         }
 
@@ -181,7 +180,6 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             if (mCurrentDoor != null && mCurrentTile != null) {
                 System.out.println("Drop Door at x:" + x + ", y: "+ y);
                 mCurrentTile.setDoorAtLocation(mCurrentDoor, x, y);
-                // TODO Implement Door creation for adjacent MapObject/Tiles
             }
         }
 
@@ -230,7 +228,6 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
             // remove selected Object from Tile Panel
             if (mSelectedAqObject != null && mSelectedTile != null) {
                 mSelectedTile.removeAqObject(mSelectedAqObject);
-                mSelectedTile.getMapPanel().updateNeighbors();
                 mSelectedTile.deSelectObject();
                 mSelectedAqObject = null;
             }

@@ -13,7 +13,6 @@ public class MapPanel extends JPanel implements IRotatable {
 
     private static final int mSize = 399; //399, 349
 
-    private Tile[] mTiles = new Tile[9];
     private MapPanel[] mNeighbors = { null, null, null, null };
 
     private JPopupMenu mPopupMenu;
@@ -93,27 +92,27 @@ public class MapPanel extends JPanel implements IRotatable {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // draw Background
-        if (mTiles[0] != null) {
+        if(mMapObject == null){
+            return;
+        }
+        Tile[] tiles = mMapObject.getTiles();
+
+        if (tiles[0] != null) {
+
             // draw Background and outlines
-            for (Tile t : mTiles) {
+            for (Tile t : tiles) {
                 t.paintBackground(g);
             }
             // draw Doors
-            for (Tile t : mTiles) {
+            for (Tile t : tiles) {
                 t.paintDoors(g);
             }
 
             // draw Objects
-            for (Tile t : mTiles) {
+            for (Tile t : tiles) {
                 t.paintMonsters(g);
             }
         }
-    }
-
-    public void removeTiles() {
-        this.removeAll();
-        this.revalidate();
-        this.repaint();
     }
 
     /**
@@ -123,133 +122,44 @@ public class MapPanel extends JPanel implements IRotatable {
      */
 
     public void rotateRight() {
-        /**
-         * [0][1][2] [6][3][0] [3][4][5] -> [7][4][1] [6][7][8] [8][5][2]
-         * 
-         * pos0 => pos2 => pos8 => pos6 => pos0 || pos1 => pos5 => pos7 => pos3 => pos1
-         */
-        Tile[] newTiles = new Tile[9];
-        if (mTiles[0] != null) {
-            int[][] positions = new int[9][2];
-            for (int i = 0; i < mTiles.length; i++) {
-                positions[i][0] = mTiles[i].getStartPosX();
-                positions[i][1] = mTiles[i].getStartPosY();
-            }
-            // corner
-            newTiles[0] = mTiles[6];
-            newTiles[6] = mTiles[8];
-            newTiles[8] = mTiles[2];
-            newTiles[2] = mTiles[0];
-            // Center
-            newTiles[4] = mTiles[4];
-            // middle
-            newTiles[1] = mTiles[3];
-            newTiles[3] = mTiles[7];
-            newTiles[7] = mTiles[5];
-            newTiles[5] = mTiles[1];
-
-            for (int i = 0; i < positions.length; i++) {
-                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
-            }
-            for (int i = 0; i < mTiles.length; i++) {
-                mTiles[i] = newTiles[i];
-                mTiles[i].rotateRight();
-            }
-        }
-        revalidate();
-        repaint();
+        mMapObject.rotateRight();
+        update();
 
     }
 
     public void rotateLeft() {
-        /**
-         * 
-         * pos0 <= pos2 <= pos8 <= pos6 <= pos0 || pos1 <= pos5 <= pos7 <= pos3 <= pos1
-         */
-
-        Tile[] newTiles = new Tile[9];
-        if (mTiles[0] != null) {
-            int[][] positions = new int[9][2];
-            for (int i = 0; i < mTiles.length; i++) {
-                positions[i][0] = mTiles[i].getStartPosX();
-                positions[i][1] = mTiles[i].getStartPosY();
-            }
-
-            // corner
-            newTiles[0] = mTiles[2];
-            newTiles[2] = mTiles[8];
-            newTiles[8] = mTiles[6];
-            newTiles[6] = mTiles[0];
-            // Center
-            newTiles[4] = mTiles[4];
-            // middle
-            newTiles[3] = mTiles[1];
-            newTiles[7] = mTiles[3];
-            newTiles[5] = mTiles[7];
-            newTiles[1] = mTiles[5];
-
-            for (int i = 0; i < positions.length; i++) {
-                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
-            }
-
-            for (int i = 0; i < mTiles.length; i++) {
-                mTiles[i] = newTiles[i];
-                mTiles[i].rotateLeft();
-            }
-        }
-        revalidate();
-        repaint();
+        mMapObject.rotateLeft();
+        update();
     }
 
     public void rotate180() {
-        Tile[] newTiles = new Tile[9];
-        if (mTiles[0] != null) {
-            int[][] positions = new int[9][2];
-            for (int i = 0; i < mTiles.length; i++) {
-                positions[i][0] = mTiles[i].getStartPosX();
-                positions[i][1] = mTiles[i].getStartPosY();
-            }
-
-            // corner
-            newTiles[0] = mTiles[8];
-            newTiles[8] = mTiles[0];
-            newTiles[2] = mTiles[6];
-            newTiles[6] = mTiles[2];
-            // Center
-            newTiles[4] = mTiles[4];
-            // middle
-            newTiles[1] = mTiles[7];
-            newTiles[7] = mTiles[1];
-            newTiles[3] = mTiles[5];
-            newTiles[5] = mTiles[3];
-
-            for (int i = 0; i < positions.length; i++) {
-                newTiles[i].setStartPos(positions[i][0], positions[i][1]);
-            }
-
-            for (int i = 0; i < mTiles.length; i++) {
-                mTiles[i] = newTiles[i];
-                mTiles[i].rotate180();
-            }
-        }
-        revalidate();
-        repaint();
+        mMapObject.rotate180();
+        update();
     }
 
     public void removeMap(){
+        detachFromNeighbors();
         mMapObject = null;
-        // remove all Neighbors from this panel
-        for (int i = 0; i < mTiles.length; i++) {
-            Tile t = mTiles[i];
-            t.setNeighborAtPos(null,TOP);
-            t.setNeighborAtPos(null,RIGHT);
-            t.setNeighborAtPos(null,BOTTOM);
-            t.setNeighborAtPos(null,LEFT);
-        }
+        update();
+    }
 
-        removeTiles();
-        revalidate();
-        repaint();
+    private void detachFromNeighbors(){
+        if(mNeighbors[TOP] != null && mNeighbors[TOP].getMap() != null){
+            MapPanel panel = mNeighbors[TOP];
+            panel.getMap().removeConnection(TOP);
+        }
+        if(mNeighbors[RIGHT] != null && mNeighbors[RIGHT].getMap() != null){
+            MapPanel panel = mNeighbors[RIGHT];
+            panel.getMap().removeConnection(RIGHT);
+        }
+        if(mNeighbors[BOTTOM] != null && mNeighbors[BOTTOM].getMap() != null){
+            MapPanel panel = mNeighbors[BOTTOM];
+            panel.getMap().removeConnection(BOTTOM);
+        }
+        if(mNeighbors[LEFT] != null && mNeighbors[LEFT].getMap() != null){
+            MapPanel panel = mNeighbors[LEFT];
+            panel.getMap().removeConnection(LEFT);
+        }
     }
 
     /**
@@ -297,17 +207,14 @@ public class MapPanel extends JPanel implements IRotatable {
     public void setMap(MapObject pMapObject) {
         mMapObject = pMapObject;
         int width = mSize / 3;
-        for (int i = 0; i < mTiles.length; i++) {
-            mTiles[i] = mMapObject.getTileAtPos(i);
-        }
 
         // init Tile start locations
         int x = 0;
         int y = 0;
-        for (int i = 0; i < mTiles.length; i++) {
-            mTiles[i].setStartPos(x, y);
-            mTiles[i].setSize(width);
-            mTiles[i].setMapPanel(this);
+        for (int i = 0; i < mMapObject.getTiles().length; i++) {
+            mMapObject.getTileAtPos(i).setStartPos(x, y);
+            mMapObject.getTileAtPos(i).setSize(width);
+            mMapObject.getTileAtPos(i).setMapPanel(this);
             if (i != 0 && (i + 1) % 3 == 0) {
                 x = 0;
                 y += width;
@@ -315,9 +222,8 @@ public class MapPanel extends JPanel implements IRotatable {
                 x += width;
             }
         }
-        initNeighbors();
-        revalidate();
-        repaint();
+        updateNeighbors();
+        update();
     }
 
     public void setPopupMenuLocation(int pPosX, int pPosY) {
@@ -337,98 +243,27 @@ public class MapPanel extends JPanel implements IRotatable {
     }
 
     public void setShowDoorOutline(boolean pState) {
-        for (Tile t : mTiles) {
-            if(t != null){
-                t.setShowDoorOutline(pState);
+        if(mMapObject != null) {
+            for (Tile t : mMapObject.getTiles()) {
+                if(t != null){
+                    t.setShowDoorOutline(pState);
+                }
             }
         }
-        revalidate();
-        repaint();
+        update();
     }
 
     public Tile getTileAtLocation(int pPosX, int pPosY) {
         if (mMapObject != null) {
-            for (int i = 0; i < mTiles.length; i++) {
-                if (pPosX >= mTiles[i].getStartPosX() && pPosY >= mTiles[i].getStartPosY() && pPosX <= mTiles[i].getStartPosX() + mTiles[i].getSize()
-                        && pPosY <= mTiles[i].getStartPosY() + mTiles[i].getSize()) {
-                    return mTiles[i];
+            Tile[] tiles = mMapObject.getTiles();
+            for (Tile tile : tiles) {
+                if (pPosX >= tile.getStartPosX() && pPosY >= tile.getStartPosY() && pPosX <= tile.getStartPosX() + tile.getSize()
+                        && pPosY <= tile.getStartPosY() + tile.getSize()) {
+                    return tile;
                 }
             }
         }
         return null;
-    }
-
-
-    private String getStringPosOfTile(int i){
-        return switch (i) {
-            case 0 -> "Top Left";
-            case 1 -> "Top";
-            case 2 -> "Top Right";
-            case 3 -> "Middle Left";
-            case 4 -> "Middle";
-            case 5 -> "Middle Right";
-            case 6 -> "Bottom Left";
-            case 7 -> "Bottom";
-            case 8 -> "Bottom Right";
-            default -> "None";
-        };
-    }
-
-    private void initNeighbors() {
-        mTiles[0].setNeighborAtPos(mTiles[1], Tile.RIGHT);
-        mTiles[0].setNeighborAtPos(mTiles[3], Tile.BOTTOM);
-        // 1
-        mTiles[1].setNeighborAtPos(mTiles[2], Tile.RIGHT);
-        mTiles[1].setNeighborAtPos(mTiles[4], Tile.BOTTOM);
-        mTiles[1].setNeighborAtPos(mTiles[0], Tile.LEFT);
-
-        // 2
-        mTiles[2].setNeighborAtPos(mTiles[5], Tile.BOTTOM);
-        mTiles[2].setNeighborAtPos(mTiles[1], Tile.LEFT);
-
-        // 3
-        mTiles[3].setNeighborAtPos(mTiles[0], Tile.TOP);
-        mTiles[3].setNeighborAtPos(mTiles[4], Tile.RIGHT);
-        mTiles[3].setNeighborAtPos(mTiles[6], Tile.BOTTOM);
-
-        // 4
-        mTiles[4].setNeighborAtPos(mTiles[1], Tile.TOP);
-        mTiles[4].setNeighborAtPos(mTiles[5], Tile.RIGHT);
-        mTiles[4].setNeighborAtPos(mTiles[7], Tile.BOTTOM);
-        mTiles[4].setNeighborAtPos(mTiles[3], Tile.LEFT);
-
-        // 5
-        mTiles[5].setNeighborAtPos(mTiles[2], Tile.TOP);
-        mTiles[5].setNeighborAtPos(mTiles[8], Tile.BOTTOM);
-        mTiles[5].setNeighborAtPos(mTiles[4], Tile.LEFT);
-
-        // 6
-        mTiles[6].setNeighborAtPos(mTiles[3], Tile.TOP);
-        mTiles[6].setNeighborAtPos(mTiles[7], Tile.RIGHT);
-
-        // 7
-        mTiles[7].setNeighborAtPos(mTiles[4], Tile.TOP);
-        mTiles[7].setNeighborAtPos(mTiles[8], Tile.RIGHT);
-        mTiles[7].setNeighborAtPos(mTiles[6], Tile.LEFT);
-
-        // 8
-        mTiles[8].setNeighborAtPos(mTiles[5], Tile.TOP);
-        mTiles[8].setNeighborAtPos(mTiles[7], Tile.LEFT);
-
-    }
-
-    public void drawTileMap(){
-        System.out.println(mTiles[0].getTopDoorString() + mTiles[1].getTopDoorString()+ mTiles[2].getTopDoorString());
-        System.out.println(mTiles[0].getMiddleDoorString(getStringPosOfTile(0)) + mTiles[1].getMiddleDoorString(getStringPosOfTile(1))+ mTiles[2].getMiddleDoorString(getStringPosOfTile(2)));
-        System.out.println(mTiles[0].getBottomDoorString() + mTiles[1].getBottomDoorString()+ mTiles[2].getTopDoorString());
-        System.out.println();
-        System.out.println(mTiles[3].getTopDoorString() + mTiles[4].getTopDoorString()+ mTiles[5].getTopDoorString());
-        System.out.println(mTiles[3].getMiddleDoorString(getStringPosOfTile(3)) + mTiles[4].getMiddleDoorString(getStringPosOfTile(4))+ mTiles[5].getMiddleDoorString(getStringPosOfTile(5)));
-        System.out.println(mTiles[3].getBottomDoorString() + mTiles[4].getBottomDoorString()+ mTiles[6].getTopDoorString());
-        System.out.println();
-        System.out.println(mTiles[6].getTopDoorString() + mTiles[7].getTopDoorString()+ mTiles[8].getTopDoorString());
-        System.out.println(mTiles[6].getMiddleDoorString(getStringPosOfTile(6)) + mTiles[7].getMiddleDoorString(getStringPosOfTile(7))+ mTiles[8].getMiddleDoorString(getStringPosOfTile(8)));
-        System.out.println(mTiles[6].getBottomDoorString() + mTiles[7].getBottomDoorString()+ mTiles[8].getTopDoorString());
     }
 
     public void updateNeighbors() {
@@ -436,92 +271,36 @@ public class MapPanel extends JPanel implements IRotatable {
         if(!hasNeighbors()){
             return;
         }
-        updateTopNeighbor();
-        updateRightNeighbor();
-        updateBottomNeighbor();
-        updateLeftNeighbor();
+        if(mNeighbors[TOP] != null && mNeighbors[TOP].getMap() != null){
+            MapObject map = mNeighbors[TOP].getMap();
+            mMapObject.setConnection(map,TOP);
+            map.setConnection(mMapObject,BOTTOM);
+        }
+        if(mNeighbors[RIGHT] != null && mNeighbors[RIGHT].getMap() != null){
+            MapObject map = mNeighbors[RIGHT].getMap();
+            mMapObject.setConnection(map,RIGHT);
+            map.setConnection(mMapObject,LEFT);
+        }
+        if(mNeighbors[BOTTOM] != null && mNeighbors[BOTTOM].getMap() != null){
+            MapObject map = mNeighbors[BOTTOM].getMap();
+            mMapObject.setConnection(map,BOTTOM);
+            map.setConnection(mMapObject,TOP);
+        }
+        if(mNeighbors[LEFT] != null && mNeighbors[LEFT].getMap() != null){
+            MapObject map = mNeighbors[LEFT].getMap();
+            mMapObject.setConnection(map,LEFT);
+            map.setConnection(mMapObject,RIGHT);
+        }
+        update();
 
+    }
+
+    public MapPanel[] getNeighbors(){
+        return mNeighbors;
+    }
+
+    public void update(){
         revalidate();
         repaint();
-
-    }
-
-    public void updateTopNeighbor(){
-        if(getNeighborAtPos(TOP) != null){
-            MapPanel topPanel = getNeighborAtPos(TOP);
-            MapObject topMap = topPanel.getMap();
-            if(topMap != null) {
-                if (topMap.getTileAtPos(6).getNeighborAtPos(BOTTOM) == null
-                        || topMap.getTileAtPos(7).getNeighborAtPos(BOTTOM) == null
-                        || topMap.getTileAtPos(8).getNeighborAtPos(BOTTOM) == null) {
-                    topMap.getTileAtPos(6).setNeighborAtPos(getMap().getTileAtPos(0), BOTTOM);
-                    topMap.getTileAtPos(7).setNeighborAtPos(getMap().getTileAtPos(1), BOTTOM);
-                    topMap.getTileAtPos(8).setNeighborAtPos(getMap().getTileAtPos(1), BOTTOM);
-                    topPanel.updateBottomNeighbor();
-                    topPanel.revalidate();
-                    topPanel.repaint();
-                }
-            }
-        }
-    }
-
-    public void updateRightNeighbor(){
-        if(getNeighborAtPos(RIGHT) != null){
-            MapPanel rightPanel = getNeighborAtPos(RIGHT);
-
-            MapObject rightMap = rightPanel.getMap();
-            if(rightMap != null){
-                if(rightMap.getTileAtPos(0).getNeighborAtPos(LEFT) == null
-                        || rightMap.getTileAtPos(3).getNeighborAtPos(LEFT) == null
-                        || rightMap.getTileAtPos(6).getNeighborAtPos(LEFT) == null) {
-                    rightMap.getTileAtPos(0).setNeighborAtPos(getMap().getTileAtPos(2), LEFT);
-                    rightMap.getTileAtPos(3).setNeighborAtPos(getMap().getTileAtPos(5), LEFT);
-                    rightMap.getTileAtPos(6).setNeighborAtPos(getMap().getTileAtPos(8), LEFT);
-                    rightPanel.updateLeftNeighbor();
-                    rightPanel.revalidate();
-                    rightPanel.repaint();
-                }
-            }
-
-        }
-    }
-    public void updateBottomNeighbor(){
-        if(getNeighborAtPos(BOTTOM) != null){
-            MapPanel bottomPanel = getNeighborAtPos(BOTTOM);
-            MapObject bottomMap = bottomPanel.getMap();
-            if(bottomMap != null) {
-                if (bottomMap.getTileAtPos(0).getNeighborAtPos(TOP) == null
-                        || bottomMap.getTileAtPos(1).getNeighborAtPos(TOP) == null
-                        || bottomMap.getTileAtPos(2).getNeighborAtPos(TOP) == null) {
-                    bottomMap.getTileAtPos(0).setNeighborAtPos(getMap().getTileAtPos(6), TOP);
-                    bottomMap.getTileAtPos(1).setNeighborAtPos(getMap().getTileAtPos(7), TOP);
-                    bottomMap.getTileAtPos(2).setNeighborAtPos(getMap().getTileAtPos(8), TOP);
-                    bottomPanel.updateTopNeighbor();
-                    bottomPanel.revalidate();
-                    bottomPanel.repaint();
-                }
-            }
-        }
-    }
-    public void updateLeftNeighbor(){
-        if(getNeighborAtPos(LEFT) != null){
-            MapPanel leftPanel = getNeighborAtPos(LEFT);
-            MapObject leftMap = leftPanel.getMap();
-            if(leftMap != null) {
-                if (leftMap.getTileAtPos(2).getNeighborAtPos(RIGHT) == null
-                        || leftMap.getTileAtPos(5).getNeighborAtPos(RIGHT) == null
-                        || leftMap.getTileAtPos(8).getNeighborAtPos(RIGHT) == null) {
-                    leftMap.getTileAtPos(2).setNeighborAtPos(getMap().getTileAtPos(0), RIGHT);
-                    leftMap.getTileAtPos(5).setNeighborAtPos(getMap().getTileAtPos(3), RIGHT);
-                    leftMap.getTileAtPos(8).setNeighborAtPos(getMap().getTileAtPos(6), RIGHT);
-                    leftPanel.updateRightNeighbor();
-                    leftPanel.revalidate();
-                    leftPanel.repaint();
-                }
-            }
-        }
-    }
-
-    public void removeNeighbors() {
     }
 }

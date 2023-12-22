@@ -652,12 +652,6 @@ public class Tile extends AQ_Object implements IRotatable {
         }
     }
 
-    public Door getDoorAtLocation(int pPosX, int pPosY) {
-        Door d;
-        // TODO
-        return null;
-    }
-
     /**
      * Calculates the current size used by all Objects in it. If the size is two
      * then objects with a size more or equal to 1 can not be added to the list.
@@ -676,10 +670,6 @@ public class Tile extends AQ_Object implements IRotatable {
 
     public ArrayList<AQ_Object> getAqObecjts() {
         return mNormalObjects;
-    }
-
-    public AQ_Object getAqObecjtAtPos(int pPos) {
-        return mNormalObjects.get(pPos);
     }
 
     public int getStartPosX() {
@@ -793,18 +783,8 @@ public class Tile extends AQ_Object implements IRotatable {
         mPath = pPath;
     }
 
-    public BufferedImage[] loadImages() {
-        BufferedImage[] newImages = new BufferedImage[5];
-        newImages = readImages(mPath, FILE_TYPE_JPG);
-        return newImages;
-    }
-
     public void setSelectedPos(int pPos) {
         mSelectedImage = pPos;
-    }
-
-    public void setImageAtPos(BufferedImage pImg, int pPos) {
-        mTileImages[pPos] = pImg;
     }
 
     public void setCurrentImage(BufferedImage pImg) {
@@ -813,10 +793,6 @@ public class Tile extends AQ_Object implements IRotatable {
 
     public void setCurrentImage(int pPos) {
         mCurrentImage = mTileImages[pPos];
-    }
-
-    public void setAllImages(BufferedImage[] pImg) {
-        mTileImages = pImg;
     }
 
     public void setPopupMenuLocation(int pPosX, int pPosY) {
@@ -899,8 +875,12 @@ public class Tile extends AQ_Object implements IRotatable {
                     mDoors[i] = null;
                 }
             }
-            mMapPanel.revalidate();
-            mMapPanel.repaint();
+            mMapPanel.update();
+            for(MapPanel panel : mMapPanel.getNeighbors()){
+                if(panel != null){
+                    panel.update();
+                }
+            }
             return;
         }
 
@@ -1003,5 +983,9 @@ public class Tile extends AQ_Object implements IRotatable {
 
     public MapPanel getMapPanel(){
         return mMapPanel;
+    }
+
+    public void removeNeighborAt(int pos){
+        setNeighborAtPos(null,pos);
     }
 }
