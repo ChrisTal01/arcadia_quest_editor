@@ -11,6 +11,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Image;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
@@ -89,14 +91,14 @@ public class Tile extends AQ_Object implements IRotatable {
         mNormalTile.addActionListener(e -> {
             setSelectedPos(Tile.NORMAL_IMAGE);
             setCurrentImage(mSelectedImage);
-            mMapPanel.repaint();
+            repaint();
         });
 
         mGrayTile = new JMenuItem("Use gray tile");
         mGrayTile.addActionListener(e -> {
             setSelectedPos(Tile.GRAY_IMAGE);
             setCurrentImage(mSelectedImage);
-            mMapPanel.repaint();
+            repaint();
         });
 
 
@@ -104,21 +106,21 @@ public class Tile extends AQ_Object implements IRotatable {
         mStartTile.addActionListener(e -> {
             setSelectedPos(Tile.START_IMAGE);
             setCurrentImage(mSelectedImage);
-            mMapPanel.repaint();
+            repaint();
         });
 
         mGreenTile = new JMenuItem("Use green tile");
         mGreenTile.addActionListener(e -> {
             setSelectedPos(Tile.GREEN_IMAGE);
             setCurrentImage(mSelectedImage);
-            mMapPanel.repaint();
+            repaint();
         });
 
         mVioletTile = new JMenuItem("Use violet tile");
         mVioletTile.addActionListener(e -> {
             setSelectedPos(Tile.VIOLET_IMAGE);
             setCurrentImage(mSelectedImage);
-            mMapPanel.repaint();
+            repaint();
         });
 
         mPopupMenu.add(mNormalTile);
@@ -356,7 +358,7 @@ public class Tile extends AQ_Object implements IRotatable {
     }
 
     public void drawDoorAtPos(Graphics g, Door door, int pStartX, int pStartY, boolean vertical) {
-        BufferedImage img = vertical ? resize(door.getVertikalImage(), door.getPrefImageHeight(), door.getPrefImageWidth()) :
+        BufferedImage img = vertical ? resize(door.getVerticalImage(), door.getPrefImageHeight(), door.getPrefImageWidth()) :
                 resize(door.getImage(), door.getPrefImageWidth(), door.getPrefImageHeight());
 
         int xEnd = img.getWidth();
@@ -416,7 +418,7 @@ public class Tile extends AQ_Object implements IRotatable {
 
     /**
      * ////////////////////////////////////////////////////////////////////////////////////////
-     * Rotate mehtods
+     * Rotate methods
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
@@ -668,7 +670,7 @@ public class Tile extends AQ_Object implements IRotatable {
         return currentSize;
     }
 
-    public ArrayList<AQ_Object> getAqObecjts() {
+    public ArrayList<AQ_Object> getAqObjects() {
         return mNormalObjects;
     }
 
@@ -692,9 +694,7 @@ public class Tile extends AQ_Object implements IRotatable {
         return mNeighbors[pos];
     }
 
-    public Door getBottomDoor(){
-        return mDoors[BOTTOM];
-    }
+    public Door getBottomDoor(){return mDoors[BOTTOM];}
     public Door getTopDoor(){
         return mDoors[TOP];
     }
@@ -711,59 +711,58 @@ public class Tile extends AQ_Object implements IRotatable {
      * ////////////////////////////////////////////////////////////////////////////////////////
      */
 
-    public void setDoorAtLocation(Door pDoor, int pPosX, int pPosY) {
-        System.out.println("\tStart setDoorAtLocation");
-
-        int xStart, yStart, xEnd, yEnd;
-
-        // Top
+    public int getDoorPosition(int pPosX, int pPosY){
         DoorOutline top = new DoorOutline(mStartX + (mSize / 10),mStartY - (mSize / 10),mSize - 2 * (mSize / 10),20);
 
         if (top.isPositionInDoorOutline(pPosX,pPosY)) {
-            System.out.println("\tTile Top");
-            mDoors[0] = pDoor;
-            if (mNeighbors[TOP] != null) {
-                System.out.println("\tAdded door to Top Neighbor at Bottom.");
-                mNeighbors[TOP].setDoorAtPos(pDoor, BOTTOM);
-            }
+            return TOP;
         }
+
         DoorOutline right = new DoorOutline(mStartX + (mSize - (mSize / 10)),mStartY + 15,20,mSize - (mSize / 5));
 
         if (right.isPositionInDoorOutline(pPosX,pPosY)) {
-            System.out.println("\tTile Right");
-            mDoors[1] = pDoor;
-            if (mNeighbors[RIGHT] != null) {
-                System.out.println("\tAdded door to Right Neighbor at Left.");
-                mNeighbors[RIGHT].setDoorAtPos(pDoor, LEFT);
-            }
+            return RIGHT;
         }
+
         DoorOutline bottom = new DoorOutline(mStartX + (mSize / 10),mStartY + (mSize - (mSize / 10)),mSize - 2 * (mSize / 10),20);
 
         if (bottom.isPositionInDoorOutline(pPosX,pPosY)) {
-            System.out.println("\tTile Bottom");
-            mDoors[2] = pDoor;
-            if (mNeighbors[BOTTOM] != null) {
-                System.out.println("\tAdded door to Bottom Neighbor at Top.");
-                mNeighbors[BOTTOM].setDoorAtPos(pDoor, TOP);
-            }
+            return BOTTOM;
         }
 
         DoorOutline left = new DoorOutline(mStartX - (mSize / 10),mStartY + 15,20,mSize - (mSize / 5));
 
         if (left.isPositionInDoorOutline(pPosX,pPosY)) {
-            System.out.println("\tTile Left");
-            mDoors[3] = pDoor;
-            if (mNeighbors[LEFT] != null) {
-                System.out.println("\tAdded door to Left Neighbor at Right.");
-                mNeighbors[LEFT].setDoorAtPos(pDoor, RIGHT);
-            }
+            return LEFT;
         }
-        mMapPanel.revalidate();
-        mMapPanel.repaint();
+        return -1;
+    }
+
+    private void repaint(){
+        if(mMapPanel != null){
+            mMapPanel.update();
+            mMapPanel.revalidate();
+            mMapPanel.repaint();
+        }
     }
 
     public void setDoorAtPos(Door pDoor, int pPos) {
+        String pos = switch (pPos){
+            case 0:
+                yield "Top";
+            case 1:
+                yield "Right";
+            case 2:
+                yield "Bottom";
+            case 3:
+                yield "Left";
+            default:
+                throw new IllegalStateException("Unexpected value: " + pPos);
+        };
+
+        System.out.println("Set door at pos: " + pos);
         mDoors[pPos] = pDoor;
+        System.out.println(mDoors[pPos] == null);
     }
 
     public void setShowDoorOutline(boolean pState) {
@@ -830,8 +829,7 @@ public class Tile extends AQ_Object implements IRotatable {
                 }
 
             }
-            mMapPanel.revalidate();
-            mMapPanel.repaint();
+            repaint();
 
         }
     }
@@ -886,8 +884,7 @@ public class Tile extends AQ_Object implements IRotatable {
 
         if (!mNormalObjects.isEmpty()) {
             mNormalObjects.remove(pObject);
-            mMapPanel.revalidate();
-            mMapPanel.repaint();
+            repaint();
         }
     }
 
@@ -919,7 +916,7 @@ public class Tile extends AQ_Object implements IRotatable {
         this.setImages(newImages);
         this.setSelectedPos(pTile.getSelectedPos());
         this.setPath(pTile.getPath());
-        this.setAqObjects(new ArrayList<>(pTile.getAqObecjts()));
+        this.setAqObjects(new ArrayList<>(pTile.getAqObjects()));
         this.setCurrentImage(deepCopy(pTile.getCurrentImage()));
         this.setSize(pTile.getSize());
         this.setNeighbors(pTile.getNeighbors());
@@ -987,5 +984,63 @@ public class Tile extends AQ_Object implements IRotatable {
 
     public void removeNeighborAt(int pos){
         setNeighborAtPos(null,pos);
+    }
+
+    public Map<Door, Double> getDoors(){
+        Map<Door,Double> doors = new HashMap<>();
+        for(Door door : mDoors){
+            if(door != null){
+                double count = doors.getOrDefault(door, 0.0);
+                doors.put(door, count + 0.5);
+            }
+        }
+        return doors;
+    }
+
+    public Map<StoneCard, Integer> getStoneCards(){
+        Map<StoneCard,Integer> stoneCards = new HashMap<>();
+        for(AQ_Object object : mNormalObjects){
+            if(object instanceof StoneCard stoneCard){
+                int count = stoneCards.getOrDefault(stoneCard, 0);
+                stoneCards.put(stoneCard, count + 1);
+            }
+        }
+        return stoneCards;
+
+    }
+
+    public Map<Monster, Integer> getMonsters(){
+        Map<Monster,Integer> monsters = new HashMap<>();
+        for(AQ_Object object : mNormalObjects){
+            if(object instanceof Monster monster){
+                int count = monsters.getOrDefault(monster, 0);
+                monsters.put(monster, count + 1);
+            }
+        }
+        return monsters;
+
+    }
+
+    public Map<Portal, Integer> getPortals(){
+        Map<Portal,Integer> portals = new HashMap<>();
+        for(AQ_Object object : mNormalObjects){
+            if(object instanceof Portal portal){
+                int count = portals.getOrDefault(portal, 0);
+                portals.put(portal, count + 1);
+            }
+        }
+        return portals;
+
+    }
+
+    public Map<Token, Integer> getTokens(){
+        Map<Token,Integer> tokens = new HashMap<>();
+        for(AQ_Object object : mNormalObjects){
+            if(object instanceof Token token){
+                int count = tokens.getOrDefault(token, 0);
+                tokens.put(token, count + 1);
+            }
+        }
+        return tokens;
     }
 }

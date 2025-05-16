@@ -5,6 +5,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -26,13 +27,13 @@ public class AQ_Object {
      * @param pImagePath       path to the image of the Object
      * @param pName            name of the Object
      * @param pGameBox         number of the src.main.java.arcadia.entities.Gamebox the Object belongs to
-     * @param pPrefIconWidth   the prefed icon width the image should have when
+     * @param pPrefIconWidth   the preferred icon width the image should have when
      *                         showed in the select menu
-     * @param pPrefIconHeight  the prefed icon height the image should have when
+     * @param pPrefIconHeight  the preferred icon height the image should have when
      *                         showed in the select menu
-     * @param pPrefImageWidth  the prefed image height the image should have when
+     * @param pPrefImageWidth  the preferred image height the image should have when
      *                         showed on the src.main.java.arcadia.entities.Tile
-     * @param pPrefImageHeight the prefed image height the image should have when
+     * @param pPrefImageHeight the preferred image height the image should have when
      *                         showed on the src.main.java.arcadia.entities.Tile
      */
     public AQ_Object(File pImagePath, String pName, GameType pGameBox, int pPrefIconWidth,
@@ -156,4 +157,16 @@ public class AQ_Object {
         setPrefImageHeight(pObject.getPrefImageHeight());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AQ_Object aqObject = (AQ_Object) o;
+        return Objects.equals(mName, aqObject.mName) && mGameBox == aqObject.mGameBox && Objects.equals(mImageFile, aqObject.mImageFile);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mName, mGameBox, mImageFile);
+    }
 }

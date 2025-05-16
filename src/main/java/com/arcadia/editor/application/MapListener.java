@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import java.awt.MouseInfo;
+import java.util.List;
 
 public class MapListener implements MouseMotionListener, MouseListener, KeyListener {
 
@@ -38,7 +39,9 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
     private ArrayList<MapPanel> mMapPanels = new ArrayList<>();
 
-    public MapListener() {
+    private MapOverview overview;
+
+    public MapListener(MapOverview overview) {
         mCurrentMapPanel = null;
         mCurrentTile = null;
         mTileMenu = null;
@@ -47,6 +50,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         mCurrentAqObject = null;
         mSelectedTile = null;
         mShiftPressed = false;
+        this.overview = overview;
 
     }
 
@@ -78,7 +82,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
         // Press on ObjectLabel
         if (e.getSource() instanceof ObjectLabel) {
-            //System.out.println("Mouse Cliecked ObjectLabel");
+            //System.out.println("Mouse Clicked ObjectLabel");
             mCurrentObjectLabel = (ObjectLabel) e.getSource();
             if (mCurrentObjectLabel.getAqObject() instanceof Door) {
                 mCurrentDoor = (Door) mCurrentObjectLabel.getAqObject();
@@ -91,7 +95,7 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         }
         // Press on MapLabel
         if (e.getSource() instanceof MapLabel) {
-            //System.out.println("Mouse Cliecked MapLabel");
+            //System.out.println("Mouse Clicked MapLabel");
             mCurrentMapLabel = (MapLabel) e.getSource();
             mCurrentMapObject = mCurrentMapLabel.getMap();
         }
@@ -160,6 +164,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         System.out.println("mouseReleased");
         // Release on MapPanel
         if (mCurrentMapObject != null && mCurrentMapPanel != null) {
+            mCurrentMapObject.setRow(mCurrentMapPanel.getRow());
+            mCurrentMapObject.setColumn(mCurrentMapPanel.getColumn());
             mCurrentMapPanel.setMap(mCurrentMapObject);
             mMapPanels.add(mCurrentMapPanel);
         }
@@ -179,7 +185,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
 
             if (mCurrentDoor != null && mCurrentTile != null) {
                 System.out.println("Drop Door at x:" + x + ", y: "+ y);
-                mCurrentTile.setDoorAtLocation(mCurrentDoor, x, y);
+                mCurrentMapPanel.getMap().setDoorAt(mCurrentDoor,mCurrentTile,x,y);
+                //mCurrentTile.setDoorAtLocation(mCurrentDoor, x, y);
             }
         }
 
@@ -189,6 +196,8 @@ public class MapListener implements MouseMotionListener, MouseListener, KeyListe
         for (MapPanel mp : mMapPanels) {
             mp.setShowDoorOutline(false);
         }
+        overview.revalidate();
+        overview.repaint();
     }
 
     @Override

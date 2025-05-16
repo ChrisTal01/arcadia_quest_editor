@@ -87,21 +87,34 @@ public class CsvReader {
                         int prefIconHeight = Integer.parseInt(data[6]);
                         int prefImageWidth = Integer.parseInt(data[7]);
                         int prefImageHeight = Integer.parseInt(data[8]);
+                        String type = data[9];
 
-                        if (data[1].contains("Door")) {
-                            // if name contains Tür or Door
+                        if (type.equals(Door.class.getSimpleName())) {
                             objectMap.put(new Door(mainImagePath, secondImagePath, objectName, gameType, prefIconWidth,
                                     prefIconHeight, prefImageWidth,prefImageHeight), amount);
-                        } else {
-                            if(gameType.equals(GameType.FROST_DRAGON)){ // TODO not accounted for FrostToken
-                                objectMap.put(new FieldToken(new File(tokenFolder, data[2]), data[1], gameType,
-                                        prefIconWidth, prefIconHeight, prefImageWidth,
-                                        prefImageHeight), amount);
-                            } else {
-                                objectMap.put(new AQ_Object(new File(tokenFolder, data[2]), data[1], gameType,
-                                        prefIconWidth, prefIconHeight, prefImageWidth,
-                                        prefImageHeight), amount);
-                            }
+                        }
+                        else if (type.equals(Portal.class.getSimpleName())) {
+                            objectMap.put(new Portal(mainImagePath, objectName, gameType,
+                                    prefIconWidth, prefIconHeight, prefImageWidth,
+                                    prefImageHeight), amount);
+                        }
+                        else if (type.equals(StoneCard.class.getSimpleName())) {
+                            objectMap.put(new StoneCard(mainImagePath, objectName, gameType,
+                                    StoneCardType.toStoneCard(gameType), prefIconWidth, prefIconHeight, prefImageWidth,
+                                    prefImageHeight), amount);
+                        }
+                        else if (type.equals(Token.class.getSimpleName())) {
+                            objectMap.put(new Token(mainImagePath, objectName, gameType, prefIconWidth, prefIconHeight,
+                                    prefImageWidth, prefImageHeight), amount);
+                        }
+                        else if (type.equals(FieldToken.class.getSimpleName())) {
+                            objectMap.put(new FieldToken(mainImagePath, objectName, gameType, prefIconWidth,
+                                    prefIconHeight, prefImageWidth, prefImageHeight), amount);
+                        }
+                        else {
+                            objectMap.put(new AQ_Object(new File(tokenFolder, data[2]), objectName, gameType,
+                                    prefIconWidth, prefIconHeight, prefImageWidth,
+                                    prefImageHeight), amount);
                         }
                     } else {
                         skippedFirst = true;

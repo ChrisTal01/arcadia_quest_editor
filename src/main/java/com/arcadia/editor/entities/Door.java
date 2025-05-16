@@ -29,16 +29,16 @@ public class Door extends AQ_Object {
         return mCounterPart;
     }
 
-    public void setVertikalImage(BufferedImage pImg) {
+    public void setVerticalImage(BufferedImage pImg) {
         mVerticalImage = pImg;
     }
 
-    public BufferedImage getVertikalImage() {
+    public BufferedImage getVerticalImage() {
         return mVerticalImage;
     }
 
     public void copy(Door pDoor) {
-        this.setVertikalImage(deepCopy(pDoor.getVertikalImage()));
+        this.setVerticalImage(deepCopy(pDoor.getVerticalImage()));
         // this.setCounterPart(new Door(pDoor.getCounterPart()));
     }
 }

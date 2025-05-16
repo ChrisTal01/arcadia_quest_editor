@@ -72,6 +72,27 @@ public class GameBox {
         return mMapObjects;
     }
 
+    public MapObject getMapByIdentifier(MapIdentifier identifier){
+        for(MapObject map : mMapObjects){
+            if(map.getIdentifier().getName().equals(identifier.getName())){
+                return map;
+            }
+        }
+        return null;
+    }
+
+    public List<MapObject> getMapsByIdentifier(List<MapIdentifier> identifiers){
+        List<MapObject> maps = new ArrayList<>();
+        for(MapObject map : mMapObjects){
+            for(MapIdentifier identifier : identifiers) {
+                if (map.getIdentifier().getName().equals(identifier.getName())) {
+                    maps.add(map);
+                }
+            }
+        }
+        return maps;
+    }
+
     public List<AQ_Object> getAQ_Objects() {
         return aqObjectAmount.keySet().stream().toList();
     }

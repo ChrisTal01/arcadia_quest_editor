@@ -3,6 +3,8 @@ package com.arcadia.editor.entities;
 import com.arcadia.editor.application.IRotatable;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapObject extends AQ_Object implements IRotatable {
 
@@ -12,7 +14,14 @@ public class MapObject extends AQ_Object implements IRotatable {
     private MapObject mCounterPart;
     private Tile[] mTiles = new Tile[9];
 
-    private String identifier;
+    private MapPanel mapPanel;
+
+    private MapIdentifier identifier;
+
+    private int row;
+    private int column;
+
+    private String path;
 
     public MapObject(String pPath, String pName, GameType pGameBox) {
         super(new File(pPath ,MAIN_MAP_FOLDER_NAME + pName + MAIN_MAP_NORMAL_NAME), pName.replace("_", " "), pGameBox);
@@ -20,9 +29,9 @@ public class MapObject extends AQ_Object implements IRotatable {
         for (int i = 0; i < mTiles.length; i++) {
             mTiles[i] = new Tile(pPath, String.valueOf(i), pGameBox);
         }
-
+        path = pPath;
         mCounterPart = null;
-        this.identifier = pName.substring(pName.lastIndexOf("_"));
+        identifier = new MapIdentifier(pName.substring(pName.lastIndexOf("_") + 1,pName.length()-1), MapIdentifier.MapSide.valueOf(pName.substring(pName.length()-1)));
 
         initNeighbors();
     }
@@ -58,16 +67,107 @@ public class MapObject extends AQ_Object implements IRotatable {
         mTiles = pTiles;
     }
 
-    public String getIdentifier(){
+    public void setTileAt(int pos, Tile tile){
+        mTiles[pos] = tile;
+    }
+
+    public MapIdentifier getIdentifier(){
         return this.identifier;
     }
 
-    public void copy(MapObject pMapObject) {
-        Tile[] newTiles = new Tile[9];
-        for (int i = 0; i < newTiles.length; i++) {
-            newTiles[i] = new Tile(pMapObject.getTileAtPos(i));
+    public void setIdentifier(MapIdentifier identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setDoorAt(Door door, Tile tile, int xPos , int yPos) {
+        int pos = tile.getDoorPosition(xPos,yPos);
+        int tilePos = getTilePos(tile);
+
+        if(pos < 0 || tilePos < 0){
+            return;
         }
-        this.setTiles(newTiles);
+
+        Tile currentTile =  getTileAtPos(tilePos);
+        Tile neighborTile;
+
+        if(pos == TOP){
+            currentTile.setDoorAtPos(door,TOP);
+            if(currentTile.getNeighborAtPos(TOP) != null) {
+                neighborTile = getTileAtPos(getTilePos(currentTile.getNeighborAtPos(TOP)));
+                if (neighborTile != null) {
+                    neighborTile.setDoorAtPos(door, BOTTOM);
+                }
+            }
+        }
+
+        if(pos == RIGHT){
+            currentTile.setDoorAtPos(door,RIGHT);
+            if(currentTile.getNeighborAtPos(RIGHT) != null) {
+                neighborTile = getTileAtPos(getTilePos(currentTile.getNeighborAtPos(RIGHT)));
+                if (neighborTile != null) {
+                    neighborTile.setDoorAtPos(door, LEFT);
+                }
+            }
+        }
+
+        if(pos == BOTTOM){
+            currentTile.setDoorAtPos(door,BOTTOM);
+            if(currentTile.getNeighborAtPos(BOTTOM) != null) {
+                neighborTile = getTileAtPos(getTilePos(currentTile.getNeighborAtPos(BOTTOM)));
+                if (neighborTile != null) {
+                    neighborTile.setDoorAtPos(door, TOP);
+                }
+            }
+        }
+
+        if(pos == LEFT){
+            currentTile.setDoorAtPos(door,LEFT);
+            if(currentTile.getNeighborAtPos(LEFT) != null){
+                neighborTile = getTileAtPos(getTilePos(currentTile.getNeighborAtPos(LEFT)));
+                if(neighborTile != null){
+                    neighborTile.setDoorAtPos(door,RIGHT);
+                }
+            }
+        }
+    }
+
+    private int getTilePos(Tile tile){
+        for (int i = 0; i < getTiles().length; i++) {
+            if(tile == getTileAtPos(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void initTiles(int width){
+        int x = 0;
+        int y = 0;
+        for (int i = 0; i < getTiles().length; i++) {
+            getTileAtPos(i).setStartPos(x, y);
+            getTileAtPos(i).setSize(width);
+            getTileAtPos(i).setMapPanel(mapPanel);
+            if (i != 0 && (i + 1) % 3 == 0) {
+                x = 0;
+                y += width;
+            } else {
+                x += width;
+            }
+        }
+    }
+
+    public void copy(MapObject pMapObject) {
+        this.setTiles(pMapObject.getTiles());
+        this.setIdentifier(pMapObject.getIdentifier());
+        this.setPath(pMapObject.getPath());
         // this.setCounterPart(new Map(pMap.getCounterPart()));
     }
 
@@ -302,5 +402,86 @@ public class MapObject extends AQ_Object implements IRotatable {
             mTiles[6].setNeighborAtPos(map.getTileAtPos(8),LEFT);
         }
     }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public Map<Monster, Integer> getMonsters(){
+        Map<Monster, Integer> monsters = new HashMap<>();
+        for(Tile t : mTiles){
+            for(Map.Entry<Monster,Integer> entry : t.getMonsters().entrySet()){
+                int count = monsters.getOrDefault(entry.getKey(), 0);
+                monsters.put(entry.getKey(), count + entry.getValue());
+            }
+        }
+        return monsters;
+
+    }
+
+    public Map<Door, Double> getDoors(){
+        Map<Door, Double> doors = new HashMap<>();
+        for(Tile t : mTiles){
+            for(Map.Entry<Door,Double> entry : t.getDoors().entrySet()){
+                double count = doors.getOrDefault(entry.getKey(), 0.0);
+                doors.put(entry.getKey(), count + entry.getValue());
+            }
+        }
+        return doors;
+    }
+
+    public Map<StoneCard, Integer> getStoneCards(){
+        Map<StoneCard, Integer> stoneCards = new HashMap<>();
+        for(Tile t : mTiles){
+            for(Map.Entry<StoneCard,Integer> entry : t.getStoneCards().entrySet()){
+                int count = stoneCards.getOrDefault(entry.getKey(), 0);
+                stoneCards.put(entry.getKey(), count + entry.getValue());
+            }
+        }
+        return stoneCards;
+    }
+
+    public Map<Token, Integer> getTokens(){
+        Map<Token, Integer> tokens = new HashMap<>();
+        for(Tile t : mTiles){
+            for(Map.Entry<Token,Integer> entry : t.getTokens().entrySet()){
+                int count = tokens.getOrDefault(entry.getKey(), 0);
+                tokens.put(entry.getKey(), count + entry.getValue());
+            }
+        }
+        return tokens;
+    }
+
+    public Map<Portal, Integer> getPortals(){
+        Map<Portal, Integer> portals = new HashMap<>();
+        for(Tile t : mTiles){
+            for(Map.Entry<Portal,Integer> entry : t.getPortals().entrySet()){
+                int count = portals.getOrDefault(entry.getKey(), 0);
+                portals.put(entry.getKey(), count + entry.getValue());
+            }
+        }
+        return portals;
+    }
+
+    public MapPanel getMapPanel() {
+        return mapPanel;
+    }
+
+    public void setMapPanel(MapPanel mapPanel) {
+        this.mapPanel = mapPanel;
+    }
+
 
 }

@@ -1,5 +1,6 @@
-package com.arcadia.editor.application;
+package com.arcadia.editor.entities;
 
+import com.arcadia.editor.application.MapListener;
 import com.arcadia.editor.entities.MapObject;
 import com.arcadia.editor.entities.Tile;
 
@@ -15,10 +16,7 @@ public class MapLabel extends JLabel {
 
     private ImageIcon mImage;
 
-    public static final String FILE_TYPE_JPG = ".jpg";
-    private boolean mUseMapA;
-
-    private MapObject mMapObject;
+    private final MapObject mMapObject;
     private MapListener mListener;
 
     public MapLabel(MapObject pMapObject, MapListener pListener) {
@@ -37,8 +35,7 @@ public class MapLabel extends JLabel {
     }
 
     public MapObject getMap() {
-        MapObject newMapObject = new MapObject(mMapObject);
-        return newMapObject;
+        return new MapObject(mMapObject);
     }
 
 }

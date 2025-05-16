@@ -8,6 +8,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapPanel extends JPanel implements IRotatable {
 
@@ -26,22 +28,18 @@ public class MapPanel extends JPanel implements IRotatable {
     private MapListener mListener;
     private MapObject mMapObject;
 
-    public MapPanel(MapListener pListener) {
+    private final int row;
+    private final int column;
+
+    public MapPanel(MapListener pListener, int row, int column) {
         this.setLayout(null);
         mMapObject = null;
         mListener = pListener;
         this.addMouseListener(mListener);
         this.addMouseMotionListener(mListener);
         initComponents();
-    }
-
-    public MapPanel(MapObject pMapObject, MapListener pListener) {
-        this.setLayout(null);
-        mMapObject = pMapObject;
-        mListener = pListener;
-        this.addMouseListener(mListener);
-        this.addMouseMotionListener(mListener);
-        initComponents();
+        this.row = row;
+        this.column = column;
     }
 
     private void initComponents() {
@@ -206,22 +204,12 @@ public class MapPanel extends JPanel implements IRotatable {
 
     public void setMap(MapObject pMapObject) {
         mMapObject = pMapObject;
+        mMapObject.setMapPanel(this);
         int width = mSize / 3;
 
         // init Tile start locations
-        int x = 0;
-        int y = 0;
-        for (int i = 0; i < mMapObject.getTiles().length; i++) {
-            mMapObject.getTileAtPos(i).setStartPos(x, y);
-            mMapObject.getTileAtPos(i).setSize(width);
-            mMapObject.getTileAtPos(i).setMapPanel(this);
-            if (i != 0 && (i + 1) % 3 == 0) {
-                x = 0;
-                y += width;
-            } else {
-                x += width;
-            }
-        }
+        mMapObject.initTiles(width);
+
         updateNeighbors();
         update();
     }
@@ -302,5 +290,13 @@ public class MapPanel extends JPanel implements IRotatable {
     public void update(){
         revalidate();
         repaint();
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
     }
 }

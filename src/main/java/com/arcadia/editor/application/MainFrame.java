@@ -1,20 +1,19 @@
 package com.arcadia.editor.application;
 
 import com.arcadia.editor.entities.*;
+import com.arcadia.editor.util.XmlConverter;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.BorderFactory;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -30,6 +29,9 @@ public class MainFrame extends JFrame {
     private JPanel mPanelMonsters; // Contains Monsters
     private JPanel mPanelObjects; // Contains Objects
     private JPanel mPanelLeft; // Contains used Objects
+
+    private JPanel mPanelLeftTop; // Contains used Objects
+    private MapOverview mPanelLeftBottom = new MapOverview(); // Contains Map Overview
     private JPanel mPanelMiddle; // Main Window
     private JTabbedPane mRightTabbedPane;
 
@@ -44,8 +46,10 @@ public class MainFrame extends JFrame {
 
     private final File mainPath = new File("src/main/resources/com/arcadia/editor/data");
 
+    private Settings settings;
+
     public MainFrame() {
-        listener = new MapListener();
+        listener = new MapListener(mPanelLeftBottom);
         this.setTitle("Editor");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(mWidth, mHeight);
@@ -75,13 +79,7 @@ public class MainFrame extends JFrame {
 
         setupGameBoxes();
 
-        // Left Panel
-        mPanelLeft = new JPanel();
-        mPanelLeft.setBackground(Color.LIGHT_GRAY);
-        mPanelLeft.setPreferredSize(new Dimension(200, 100));
-        mPanelLeft.setBorder(BorderFactory.createLineBorder(Color.black));
-        mPanelLeft.setLayout(null);
-        this.add(mPanelLeft, BorderLayout.WEST);
+        settings = new Settings();
 
         // Maps Panel
         mPanelMaps = new JPanel();
@@ -92,7 +90,7 @@ public class MainFrame extends JFrame {
         mPanelMaps.addMouseMotionListener(listener);
 
         // MapLabels
-        mMapLabels = new ArrayList<MapLabel>();
+        mMapLabels = new ArrayList<>();
 
         for(GameBox gameBox : gameBoxes){
             for(MapObject m : gameBox.getMaps()){
@@ -122,7 +120,7 @@ public class MainFrame extends JFrame {
         mPanelMonsters.addMouseMotionListener(listener);
 
         // Monster Labels
-        mMonsterLabels = new ArrayList<ObjectLabel>();
+        mMonsterLabels = new ArrayList<>();
         for(GameBox gameBox : gameBoxes) {
             for (Monster m : gameBox.getMonsters()) {
                 ObjectLabel label = new ObjectLabel(m, listener);
@@ -150,7 +148,7 @@ public class MainFrame extends JFrame {
         mPanelObjects.addMouseMotionListener(listener);
 
         // Monster Labels
-        mObjectLabels = new ArrayList<ObjectLabel>();
+        mObjectLabels = new ArrayList<>();
 
         for(GameBox gameBox : gameBoxes) {
             for (AQ_Object o : gameBox.getAQ_Objects()) {
@@ -193,12 +191,45 @@ public class MainFrame extends JFrame {
         mMiddleScrollPane.setPreferredSize(new Dimension(500, 400));
         mMiddleScrollPane.setViewportView(mPanelMiddle);
 
-        // Map Panels
+        initMapPanels();
+
+
+        mPanelLeftTop = new JPanel();
+        mPanelLeftTop.setBackground(Color.LIGHT_GRAY);
+        mPanelLeftTop.setPreferredSize(new Dimension(200, 200));
+        mPanelLeftTop.setBorder(BorderFactory.createLineBorder(Color.black));
+        mPanelLeftTop.setLayout(null);
+
+
+        mPanelLeftBottom.setBackground(Color.LIGHT_GRAY);
+        mPanelLeftBottom.setPreferredSize(new Dimension(200, 50));
+        mPanelLeftBottom.setBorder(BorderFactory.createLineBorder(Color.black));
+        mPanelLeftBottom.setLayout(null);
+        mPanelLeftBottom.setMaps(mMapPanels);
+
+        JScrollPane mapOverviewScrollPane = new JScrollPane(mPanelLeftBottom,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED ,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        // Left Panel
+        mPanelLeft = new JPanel();
+        mPanelLeft.setBackground(Color.LIGHT_GRAY);
+        mPanelLeft.setPreferredSize(new Dimension(200, 100));
+        mPanelLeft.setBorder(BorderFactory.createLineBorder(Color.black));
+        mPanelLeft.setLayout(new BoxLayout(mPanelLeft,BoxLayout.PAGE_AXIS));
+        mPanelLeft.add(mPanelLeftTop);
+        mPanelLeft.add(mapOverviewScrollPane);
+        this.add(mPanelLeft, BorderLayout.WEST);
+
+        initMenu();
+    }
+
+    private void initMapPanels(){
         mMapPanels = new MapPanel[6][4];
+        // Map Panels
 
         for (int i = 0; i < mMapPanels.length; i++) {
             for (int j = 0; j < mMapPanels[i].length; j++) {
-                mMapPanels[i][j] = new MapPanel(listener);
+                mMapPanels[i][j] = new MapPanel(listener,i,j);
 
                 MapPanel panel = mMapPanels[i][j];
                 panel.setBounds(i * MapPanel.getSizes(), j * MapPanel.getSizes(), MapPanel.getSizes(),
@@ -227,5 +258,54 @@ public class MainFrame extends JFrame {
                 }
             }
         }
+    }
+
+    private void initMenu(){
+        JMenu menu = new JMenu("File");
+        JMenuItem newScenarioMenu = new JMenuItem("New Scenario");
+
+        newScenarioMenu.addActionListener(e -> {
+            settings = new Settings();
+            settings.setVisible(true);
+        });
+        menu.add(newScenarioMenu);
+
+        JMenuItem settingsMenu = new JMenuItem("Settings");
+        settingsMenu.addActionListener(e -> settings.setVisible(true));
+        menu.add(settingsMenu);
+
+        JMenuItem saveAsMenu = getjMenuItem();
+        menu.add(saveAsMenu);
+
+        JMenuBar bar = new JMenuBar();
+        bar.add(menu);
+        this.setJMenuBar(bar);
+    }
+
+    private JMenuItem getjMenuItem() {
+        JMenuItem saveAsMenu = new JMenuItem("Save as...");
+        saveAsMenu.addActionListener(e -> {
+            JFileChooser c = new JFileChooser();
+            c.setVisible(true);
+            int rVal = c.showSaveDialog(this);
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                File file = c.getSelectedFile();
+                try {
+                    List<MapObject> maps = new ArrayList<>();
+                    for (MapPanel[] mapPanel : mMapPanels) {
+                        for (MapPanel current : mapPanel) {
+                            if(current.getMap() != null){
+                                maps.add(current.getMap());
+                            }
+                        }
+                    }
+                    settings.getScenario().setTileGrid(maps);
+                    XmlConverter.convertScenario(file,settings.getScenario());
+                } catch (ParserConfigurationException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        return saveAsMenu;
     }
 }
